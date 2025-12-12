@@ -19,14 +19,14 @@ A hands-on Wazuh SIEM homelab demonstrating real-world threat detection. This pr
 - Settings: 20 threads, maximum speed, stop on success false
 - Result: 500+ attempts generating hundreds of failed logins in seconds
 
+![Metasploit Terminal](screenshots/metasploit-terminal.png)  
+*Metasploit console showing module configuration and attack execution on 192.168.0.9:22*
+
 ## Detection Results
 - Hundreds of authentication failures captured
 - Key rules triggered: SSH/PAM login failures
 - Mapped to MITRE ATT&CK **T1110.001** (Brute Force - Credential Access)
 - Strong visual spike in Security Events → Authentication Failures
-
-![Metasploit Terminal](screenshots/metasploit-terminal.png)  
-*Metasploit console showing module configuration and attack execution on 192.168.0.9:22*
 
 ![Event JSON Details](screenshots/event-json-details.png)  
 *Decoded event JSON from /var/log/auth.log matching the attack (srcip, failed user, PAM decoder)*
@@ -41,6 +41,6 @@ A hands-on Wazuh SIEM homelab demonstrating real-world threat detection. This pr
 
 This lab runs entirely on personal bare-metal hardware. Built to demonstrate practical SOC analyst skills for junior roles.
 
-**Contact**: John Gill | Security+ (SY0-701) | [LinkedIn](https://www.linkedin.com/in/jessemcgeejr/)
+**Contact**: John Gill | Security+ (SY0-701) | [LinkedIn](https://www.linkedin.com/feed/)
 
 Last updated: December 2025
