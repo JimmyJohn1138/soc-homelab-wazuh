@@ -41,6 +41,6 @@ A hands-on Wazuh SIEM homelab demonstrating real-world threat detection. This pr
 
 This lab runs entirely on personal bare-metal hardware. Built to demonstrate practical SOC analyst skills for junior roles.
 
-**Contact**: John Gill | Security+ (SY0-701) | [LinkedIn](https://www.linkedin.com/feed/)
+**Contact**: John Gill | Security+ (SY0-701) | [LinkedIn](https://www.linkedin.com/in/john-gill-510478a8/)
 
 Last updated: December 2025
