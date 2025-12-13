@@ -1,72 +1,107 @@
 # Wazuh SOC Homelab - Detection Lab
+**Hands-on SOC Detection & Response Lab with Wazuh**
 
-**Home SIEM lab with Wazuh**  
-A hands-on Wazuh SIEM homelab demonstrating real-world threat detection across Linux and Windows endpoints. This project simulates SSH and RDP brute-force attacks using Metasploit and Hydra, showcasing Wazuh's alerting, MITRE ATT&CK mapping, and event decoding.
+A fully self-built Security Operations Center (SOC) homelab using Wazuh — an open-source SIEM and XDR platform. This project demonstrates end-to-end threat detection and response workflows in a realistic multi-OS environment, focusing on entry-level SOC analyst skills: log ingestion, alert triage, detection engineering, troubleshooting, and basic incident response.
 
 ![SSH Authentication Failure Spike](screenshots/auth-failure-spike.png)  
-*Wazuh Dashboard showing massive authentication failure spike from SSH attack*
+*Wazuh Dashboard showing massive authentication failure spike during SSH brute-force simulation*
 
-## Lab Setup
-- **Wazuh Manager + Dashboard**: Ubuntu server
-- **Agents**: Linux endpoint (Ubuntu/Mint - "Raistlin") and Windows 10 endpoint ("Fistandantilus")
-- **Attacker**: Parrot OS with Metasploit and Hydra
-- **Environment**: All components running **bare metal** on personal hardware (dual-boot Linux/Windows setup for realistic testing)
+## Project Summary and Motivation
 
-## Simulated Attack: SSH Brute-Force
-- Used Metasploit's `auxiliary/scanner/ssh/ssh_login` module
-- Targeted username: Raistlin
-- Password file: RockYou first 500
-- Settings: 20 threads, maximum speed, stop on success false
-- Result: 500+ attempts generating 656 failed logins in seconds
+As an aspiring cybersecurity professional targeting junior SOC analyst roles, I created this lab to bridge the gap between theoretical knowledge (e.g., Microsoft SC-200/SC-300 coursework, Security+ certification) and hands-on experience that employers actually look for.
 
-![Metasploit Terminal](screenshots/metasploit-terminal.png)  
-*Metasploit console showing module configuration and attack execution*
+This homelab replicates real SOC workflows:
+- Deploying and managing agents across Linux and Windows endpoints
+- Ingesting and enriching logs
+- Detecting attacks using stock and custom rules
+- Triaging alerts in the dashboard
+- Mapping to MITRE ATT&CK
+- Simulating incident response actions
 
-## Detection Results (Linux Agent)
-- 656 authentication failures captured
-- Key rules triggered: SSH/PAM login failures
-- Mapped to MITRE ATT&CK **T1110.001** (Brute Force - Credential Access)
+It highlights my ability to troubleshoot common production issues (agent connectivity, indexer performance, certificate errors) — skills directly transferable to tools like Wazuh, Splunk, Elastic, or Microsoft Sentinel.
 
-![SSH Event JSON Details](screenshots/event-json-details.png)  
-*Decoded event JSON from /var/log/auth.log matching the attack*
-
-![SSH Authentication Failure Logs](screenshots/auth-failure-logs.png)  
-*Detailed logs of repeated failed login attempts*
-
-## Simulated Attack: Windows RDP Brute-Force
-- Used Hydra on Parrot OS attacker
-- Targeted local "administrator" account on Windows 10 endpoint ("Fistandantilus")
-- Password file: RockYou first 100
-- Settings: 4 threads
-- Result: 101 failed login attempts in minutes
-
-![RDP Dashboard Overview](screenshots/rdp-dashboard-overview.png)  
-*Wazuh Dashboard showing 101 authentication failures and clear spike*
-
-![Hydra Terminal](screenshots/rdp-hydra-terminal.png)  
-*Hydra execution confirming 101 attempts from attacker IP 192.168.0.74*
-
-## Detection Results (Windows Agent)
-- 101 failed logons captured via Windows Security Event 4625
-- Escalated to level 10 alerts
-- Mapped to MITRE ATT&CK **Brute Force** tactic (Credential Access)
-
-![Windows Agent Status](screenshots/windows-agent-status.png)  
-*Bare-metal Windows 10 agent ("Fistandantilus") actively sending alerts*
-
-![RDP MITRE Framework View](screenshots/rdp-mitre-bruteforce.png)  
-*Framework view confirming Brute Force tactic and level 10 severity*
-
-![RDP Event JSON](screenshots/rdp-event-json)  
-*Decoded Event 4625 showing failed logon from attacker IP 192.168.0.74 (text example of raw alert)*
-
-## Lessons Learned
-- Wazuh reliably detects and visualizes brute-force attempts across Linux (SSH) and Windows (RDP) endpoints
-- Bare-metal dual-boot environments provide authentic testing conditions
-- Stock rules deliver strong baseline detection with volume-based escalation—ideal foundation for custom tuning in a production SOC
-
-This lab runs entirely on personal bare-metal hardware. Built to demonstrate practical SOC analyst skills for junior roles.
+Everything runs on **bare-metal personal hardware** (no VMs for the endpoints) to ensure authentic log behavior and network interactions.
 
 **Contact**: John Gill | Security+ (SY0-701) | [LinkedIn](https://www.linkedin.com/in/jessemcgeejr/)
 
-Last updated: December 2025
+## Lab Architecture
+
+![Lab Architecture Diagram](screenshots/lab-architecture-diagram.png)  
+*Homelab network topology: Wazuh manager centralizing logs from Linux/Windows endpoints and monitored attacker machine*
+
+## Simulated Attacks & Detection Results
+
+### 1. SSH Brute-Force Attack (Linux Endpoint)
+
+**Attack Execution**  
+- Tool: Metasploit `auxiliary/scanner/ssh/ssh_login`  
+- Target: Username "Raistlin"  
+- Password list: RockYou (first 500)  
+- Result: 656 failed login attempts in seconds  
+
+![Metasploit Terminal](screenshots/metasploit-terminal.png)  
+*Metasploit attack console*
+
+**Detection**  
+- Logs from `/var/log/auth.log` ingested successfully  
+- Triggered Wazuh rule **57105** (multiple SSH authentication failures)  
+- Alert level escalation based on volume  
+- Mapped to MITRE ATT&CK **T1110.001** (Brute Force – Password Guessing)  
+
+![SSH Event JSON Details](screenshots/event-json-details.png)  
+*Decoded alert JSON*  
+![SSH Authentication Failure Logs](screenshots/auth-failure-logs.png)  
+*Raw failed login entries*
+
+**Troubleshooting Overcome**: Initially no auth.log monitoring — added custom `<localfile>` entry in agent `ossec.conf` and restarted agent.
+
+### 2. RDP Brute-Force Attack (Windows Endpoint)
+
+**Attack Execution**  
+- Tool: Hydra on Parrot OS  
+- Target: Local "administrator" account  
+- Password list: RockYou (first 100)  
+- Result: 101 failed login attempts  
+
+![RDP Dashboard Overview](screenshots/rdp-dashboard-overview.png)  
+*Clear spike of 101 failures in dashboard*  
+![Hydra Terminal](screenshots/rdp-hydra-terminal.png)  
+*Hydra execution from attacker IP*
+
+**Detection**  
+- Windows Event ID **4625** captured (enhanced with Sysmon)  
+- Triggered Wazuh rule **18120** (multiple failed logons) → Level 10 alerts  
+- Mapped to MITRE ATT&CK **T1110.003** (Brute Force – Password Spraying)  
+
+![Windows Agent Status](screenshots/windows-agent-status.png)  
+*Active bare-metal Windows agent*  
+![RDP MITRE Framework View](screenshots/rdp-mitre-bruteforce.png)  
+*MITRE ATT&CK navigator view*  
+![RDP Event JSON](screenshots/rdp-event-json.png)  
+*Decoded Event 4625 with attacker IP*
+
+**Troubleshooting Overcome**: Alerts delayed due to indexer overload — cleared data directory, restarted services, and re-initialized security index.
+
+## Lessons Learned & Real SOC Workflow Ties
+
+- **Alert Triage**: Used dashboard filters (`level: >7 AND rule.description: *brute*`) to quickly prioritize real threats over noise — mirrors Tier 1 analyst shift workflow.  
+- **False Positive Reduction**: Tested rule tuning ideas with `wazuh-logtest` and agent grouping to reduce heartbeat/alert fatigue.  
+- **Incident Response Simulation**: Detection (seconds) → Triage (minutes) → Containment (block attacker IP via `iptables`). Documented findings in MITRE navigator export.  
+- **Production Troubleshooting**: Resolved agent "Never connected" status (firewall/UDP 1514), certificate errors, and indexer performance issues — directly applicable to on-call scenarios.
+
+## Demonstrated Skills
+
+| Category               | Competencies Demonstrated                                      | Tools/Techniques                          | Real-World Application                  |
+|------------------------|----------------------------------------------------------------|-------------------------------------------|----------------------------------------|
+| Log Monitoring         | Multi-OS log ingestion, verification, enrichment               | Wazuh agents, Sysmon, ossec.conf          | Baseline monitoring in any SIEM        |
+| Detection Engineering  | Analyzed stock rules, MITRE mapping, identified tuning paths   | Default rules, MITRE navigator            | Rule/signature development             |
+| Alert Analysis         | Severity-based triage, JSON decoding, pivoting                 | Security Events UI, queries               | Incident investigation (Splunk, Sentinel) |
+| Visualization          | Custom dashboard views, MITRE heatmaps, diagrams               | Wazuh Dashboard                           | Reporting to stakeholders              |
+| Troubleshooting        | Agent connectivity, indexer lags, cert issues                  | systemctl, logs, certutil                 | On-call debugging in production         |
+| Incident Response      | Simulated containment, documentation, timelines                | iptables, alert exports                   | Tier 1/2 IR playbooks                  |
+
+This lab is 100% self-built on personal bare-metal hardware. All configs in `/configs/`, evidence in `/screenshots/`.
+
+Fork, contribute, or open an issue with questions!
+
+**Last updated: December 13, 2025**v
