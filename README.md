@@ -44,3 +44,30 @@ This lab runs entirely on personal bare-metal hardware. Built to demonstrate pra
 **Contact**: John Gill | Security+ (SY0-701) | [LinkedIn](https://www.linkedin.com/in/john-gill-510478a8/)
 
 Last updated: December 2025
+
+## Simulated Attack: Windows RDP Brute-Force
+- Used Hydra on Parrot OS attacker
+- Targeted local "administrator" account on Windows 10 endpoint ("Fistandantilus")
+- Password file: RockYou first 100
+- Settings: 4 tasks/threads
+- Result: 101 failed login attempts in minutes
+
+![RDP Dashboard Overview](screenshots/rdp-dashboard-overview.png)  
+*Wazuh Dashboard showing 101 authentication failures and clear spike*
+
+![Hydra Terminal](screenshots/rdp-hydra-terminal.png)  
+*Hydra execution confirming 101 attempts from 192.168.0.74*
+
+## Detection Results (Windows Agent)
+- 101 failed logons captured via Windows Security Event 4625
+- Escalated to level 10 alerts
+- Mapped to MITRE ATT&CK **Brute Force** tactic (Credential Access)
+
+![MITRE Framework View](screenshots/rdp-mitre-framework.png)  
+*Framework view confirming Brute Force tactic and level 10 severity*
+
+![Windows Agent Status](screenshots/windows-agent-status.png)  
+*Bare-metal Windows 10 agent ("Fistandantilus") actively reporting*
+
+![RDP Event JSON](screenshots/rdp-event-json.png)  
+*Decoded Event 4625 showing failed logon from attacker IP 192.168.0.74*
