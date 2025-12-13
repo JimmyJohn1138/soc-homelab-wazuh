@@ -29,6 +29,33 @@ Everything runs on **bare-metal personal hardware** (no VMs for the endpoints) t
 ![Lab Architecture Diagram](screenshots/lab-architecture-diagram.png)  
 *Homelab network topology: Wazuh manager centralizing logs from Linux/Windows endpoints and monitored attacker machine*
 
+## ⚙️ Setup Overview
+
+This homelab runs entirely on **bare‑metal hardware** with one attacker system (also monitored as a Wazuh agent) and two additional endpoints. All systems report logs to a central Wazuh Manager for detection and visualization.
+
+- **Wazuh Manager/Dashboard (Ubuntu 22.04)**  
+  Installed using [Wazuh official guide](https://documentation.wazuh.com/current/installation-guide/index.html).  
+  Configured to collect logs from Windows, Linux, and Parrot agents.  
+  Provides dashboards, alerting, and MITRE ATT&CK mapping.
+
+- **Windows 10 Agent ("Fistandantilus")**  
+  Wazuh agent installed. Security Event logging enabled (Event ID 4625 for failed logons).  
+  Used for RDP brute‑force and malware execution scenarios.  
+  Demonstrates detection of credential access and execution techniques.
+
+- **Linux Agent ("Raistlin")**  
+  Wazuh agent installed. Auditd enabled for privilege escalation and FIM alerts.  
+  Used for SSH brute‑force, privilege escalation, and file monitoring scenarios.  
+  Demonstrates detection of privilege escalation and defense evasion techniques.
+
+- **Parrot OS Attacker + Agent**  
+  Dual role: generates safe attack traffic **and** reports its own logs to Wazuh.  
+  Tools: Hydra, Nmap, Atomic Red Team, EICAR test file.  
+  Used for brute‑force, port scanning, and malware simulation scenarios.  
+  Demonstrates visibility into attacker activity as well as victim endpoints.
+
+**Note:** This repo focuses on attack/detection labs. For installation details, see [Wazuh documentation](https://documentation.wazuh.com/current/installation-guide/index.html).
+
 ## Simulated Attacks & Detection Results
 
 ### 1. SSH Brute-Force Attack (Linux Endpoint)
