@@ -22,11 +22,11 @@ It highlights my ability to troubleshoot common production issues (agent connect
 
 Everything runs on **bare-metal personal hardware** (no VMs for the endpoints) to ensure authentic log behavior and network interactions.
 
-**Contact**: John Gill | Security+ (SY0-701) | [LinkedIn](https://www.linkedin.com/in/jessemcgeejr/)
+**Contact**: John Gill | Security+ (SY0-701) | [LinkedIn](https://www.linkedin.com/in/jessemcgeejr)
 
 ## Lab Architecture
 
-![Lab Architecture Diagram](screenshots/lab-architecture-diagram.png)  
+![Lab Architecture Diagram](screenshots/lab-architecture-diagram.jpg)  
 *Homelab network topology: Wazuh manager centralizing logs from Linux/Windows endpoints and monitored attacker machine*
 
 ## ⚙️ Setup Overview
