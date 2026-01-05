@@ -89,3 +89,19 @@ From Parrot OS attacker:
 
 ```bash
 nmap -sS -A -p 1-1000 192.168.0.9
+
+Nmap Scan Command
+Detection Setup
+
+Suricata installed on Raistlin with EVE JSON logging enabled
+Custom rule to elevate severity and map to MITRE
+
+Results
+
+High-severity (level 12) alerts
+Spike in dashboard
+T1046 highlighted in MITRE heatmap
+
+Suricata EVE Log
+Wazuh Nmap Alert
+MITRE Heatmap T1046
