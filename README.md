@@ -95,19 +95,6 @@ Result: 101 failed login attempts
 The Linux endpoint (“Raistlin”) runs Suricata alongside the Wazuh agent.  
 EVE JSON logging is enabled to capture alerts and protocol metadata:
 
-    - eve-log:
-        enabled: yes
-        filetype: regular
-        filename: /var/log/suricata/eve.json
-        types:
-          - alert:
-              tagged-packets: yes
-          - http
-          - dns
-          - tls
-          - files
-          - anomaly
-
 ![Suricata EVE Config](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/CorrectedEve-Log%20.png)
 
 Suricata service is enabled and started:
