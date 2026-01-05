@@ -82,26 +82,60 @@ Result: 101 failed login attempts
 ![RDP MITRE Framework View](screenshots/rdp-mitre-bruteforce.png)  
 ![RDP Event JSON](screenshots/rdp-event-json.png)
 
-### 3. Network Reconnaissance - Nmap Port Scan (Linux Endpoint)
+3. Network Reconnaissance - Nmap Port Scan (Linux Endpoint)
+Attack Execution  
+Tool: Nmap from Parrot OS attacker
 
-**Attack Execution**  
-From Parrot OS attacker:
-
-```bash
+bash
 nmap -sS -A -p 1-1000 192.168.0.9
+  
+Parrot OS terminal showing SYN scan with OS and service detection
 
-Nmap Scan Command
 Detection Setup
 
 Suricata installed on Raistlin with EVE JSON logging enabled
-Custom rule to elevate severity and map to MITRE
 
-Results
+Logging configured to capture alerts, HTTP, DNS, TLS, files, and anomalies
 
-High-severity (level 12) alerts
-Spike in dashboard
-T1046 highlighted in MITRE heatmap
+yaml
+- eve-log:
+    enabled: yes
+    filetype: regular
+    filename: /var/log/suricata/eve.json
+    types:
+      - alert:
+          tagged-packets: yes
+      - http
+      - dns
+      - tls
+      - files
+      - anomaly
+  
+Suricata configuration snippet enabling alert and protocol logging
 
-Suricata EVE Log
-Wazuh Nmap Alert
-MITRE Heatmap T1046
+Suricata service enabled and started:
+
+bash
+sudo systemctl enable --now suricata
+
+Custom Rule Deployment  
+Wazuh rule added to elevate Suricata SID 86600 to level 12 and map to MITRE ATT&CK T1046:
+
+xml
+<group name="suricata,nmap">
+  <rule id="100201" level="12">
+    <if_sid>86600</if_sid>
+    <description>Nmap scripting engine detected - potential port scan.</description>
+    <mitre>
+      <id>T1046</id>
+    </mitre>
+  </rule>
+</group>
+
+Detection Results
+
+High-severity alerts (level 12) triggered by Suricata
+
+Alerts ingested by Wazuh and visualized in dashboard
+
+MITRE heatmap highlights T1046 – Network Service Scanning
