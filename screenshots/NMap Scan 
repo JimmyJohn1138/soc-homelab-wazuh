@@ -1,0 +1,46 @@
+1. Port Scanning with Nmap
+Your repo mentions Nmap as a tool but lacks detection implementation. We'll simulate an Nmap scan from Parrot OS targeting the Linux agent ("Raistlin"), detect it using Suricata integration (for robust network-based detection), and create a custom Wazuh rule (our first custom element) to alert on Nmap activity. This maps to MITRE ATT&CK T1046 (Network Service Scanning).
+Simulation Steps:
+
+On Parrot OS (attacker): Run nmap -sS -A -p 1-1000 <RAISTLIN_IP> (stealth SYN scan with OS detection and scripting). This will probe open ports like SSH (22) or others.
+Note: If no vulnerable services are open, the scan won't exploit but will generate traffic for detection.
+
+Detection Setup:
+To detect incoming scans reliably, integrate Suricata (a network IDS) on the Linux agent ("Raistlin"). Wazuh can ingest Suricata's JSON logs and trigger rules.
+
+Install Suricata on "Raistlin" (Ubuntu/Debian-based):textsudo apt update
+sudo apt install suricata jq
+sudo suricata-update  # Fetch Emerging Threats rules
+Configure Suricata (/etc/suricata/suricata.yaml):
+Set af-packet interface to your network interface (e.g., eth0): interface: eth0.
+Enable JSON logging: Under eve-log, set enabled: yes and filetype: regular for /var/log/suricata/eve.json.
+Start Suricata: sudo systemctl enable --now suricata.
+
+On the Wazuh agent ("Raistlin"), edit /var/ossec/etc/ossec.conf to monitor Suricata logs:text<localfile>
+  <log_format>json</log_format>
+  <location>/var/log/suricata/eve.json</location>
+</localfile>Restart the agent: sudo systemctl restart wazuh-agent.
+On the Wazuh manager, add a custom decoder if needed (but Suricata's JSON is often parsed by Wazuh's built-in decoders). For enhancement, create a custom decoder in /var/ossec/etc/decoders/local_decoders.xml to extract attacker IP:text<decoder name="suricata">
+  <prematch>^suricata</prematch>
+  <program_name>suricata</program_name>
+  <json_map>src_ip:srcip</json_map>
+</decoder>This is our second custom element (decoder for field mapping).
+
+Custom Rule for Nmap Detection:
+On the Wazuh manager, add to /var/ossec/etc/rules/local_rules.xml:
+text<group name="suricata,nmap">
+  <rule id="100201" level="12">
+    <if_sid>86600</if_sid>  <!-- ET SCAN Nmap Scripting Engine from Emerging Threats -->
+    <description>Nmap scripting engine detected - potential port scan.</description>
+    <mitre>
+      <id>T1046</id>
+    </mitre>
+  </rule>
+</group>
+Restart manager: sudo systemctl restart wazuh-manager.
+Expected Results:
+
+Run the Nmap scan; Suricata detects it (check /var/log/suricata/eve.json for "ET SCAN Nmap Scripting Engine").
+Wazuh alerts in the dashboard under "Security Events" with rule 100201.
+Take screenshots: Scan command output, Suricata log snippet, Wazuh alert details.
+Lessons: This shows network traffic analysis; tune to reduce FPs from legitimate scans.
