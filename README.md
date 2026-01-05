@@ -3,7 +3,7 @@
 
 A fully self-built Security Operations Center (SOC) homelab using Wazuh — an open-source SIEM and XDR platform. This project demonstrates end-to-end threat detection and response workflows in a realistic multi-OS environment, focusing on entry-level SOC analyst skills: log ingestion, alert triage, detection engineering, troubleshooting, and basic incident response.
 
-![SSH Authentication Failure Spike](screenshots/auth-failure-spike.png)
+![SSH Authentication Failure Spike](/screenshots/auth-failure-spike.png)
 *Wazuh Dashboard showing massive authentication failure spike during SSH brute-force simulation*
 
 ## Project Summary and Motivation
@@ -26,7 +26,7 @@ Everything runs on **bare-metal personal hardware** (no VMs for the endpoints) t
 
 ## Lab Architecture
 
-![Lab Architecture Diagram](screenshots/lab-architecture-diagram.jpg)
+![Lab Architecture Diagram](/screenshots/lab-architecture-diagram.jpg)
 *Homelab network topology: Wazuh manager centralizing logs from Linux/Windows endpoints and monitored attacker machine*
 
 ## ⚙️ Setup Overview
@@ -49,20 +49,24 @@ This homelab runs entirely on **bare‑metal hardware** with one attacker system
 
 ## Simulated Attacks & Detection Results
 
+---
+
 ### 1. SSH Brute-Force Attack (Linux Endpoint)
 
 **Attack Execution**  
 Tool: Metasploit `auxiliary/scanner/ssh/ssh_login`  
 Result: 656 failed login attempts in seconds
 
-![Metasploit Terminal](screenshots/metasploit-terminal.png)
+![Metasploit Terminal](/screenshots/metasploit-terminal.png)
 
 **Detection**  
 - Triggered Wazuh rule **57105** (multiple SSH authentication failures)  
 - Mapped to MITRE ATT&CK **T1110.001** (Brute Force – Password Guessing)
 
-![SSH Event JSON Details](screenshots/event-json-details.png)  
-![SSH Authentication Failure Logs](screenshots/auth-failure-logs.png)
+![SSH Event JSON Details](/screenshots/event-json-details.png)  
+![SSH Authentication Failure Logs](/screenshots/auth-failure-logs.png)
+
+---
 
 ### 2. RDP Brute-Force Attack (Windows Endpoint)
 
@@ -70,17 +74,19 @@ Result: 656 failed login attempts in seconds
 Tool: Hydra on Parrot OS  
 Result: 101 failed login attempts
 
-![RDP Dashboard Overview](screenshots/rdp-dashboard-overview.png)  
-![Hydra Terminal](screenshots/rdp-hydra-terminal.png)
+![RDP Dashboard Overview](/screenshots/rdp-dashboard-overview.png)  
+![Hydra Terminal](/screenshots/rdp-hydra-terminal.png)
 
 **Detection**  
 - Windows Event ID **4625** captured  
 - Triggered Wazuh rule **18120** → Level 10 alerts  
 - Mapped to MITRE ATT&CK **T1110.003** (Brute Force – Password Spraying)
 
-![Windows Agent Status](screenshots/windows-agent-status.png)  
-![RDP MITRE Framework View](screenshots/rdp-mitre-bruteforce.png)  
-![RDP Event JSON](screenshots/rdp-event-json.png)
+![Windows Agent Status](/screenshots/windows-agent-status.png)  
+![RDP MITRE Framework View](/screenshots/rdp-mitre-bruteforce.png)  
+![RDP Event JSON](/screenshots/rdp-event-json.png)
+
+---
 
 ### 3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)
 
@@ -89,7 +95,7 @@ From the Parrot OS attacker system (“Takhisis”), a SYN scan with OS and serv
 
     nmap -sS -A -p 1-1000 192.168.0.9
 
-![Nmap Scan Output](screenshots/aE1n9K9BBPUWqNjcVLGZ4.png)  
+![Nmap Scan Output](/screenshots/aE1n9K9BBPUWqNjcVLGZ4.png)  
 *Parrot OS terminal showing SYN scan and service enumeration*
 
 ---
@@ -112,13 +118,13 @@ EVE JSON logging is enabled to capture alerts and protocol metadata:
           - files
           - anomaly
 
-![Suricata EVE Config](screenshots/9JfS232srXa2wEtCAivhU.png)
+![Suricata EVE Config](/screenshots/9JfS232srXa2wEtCAivhU.png)
 
 Suricata service is enabled and started:
 
     sudo systemctl enable --now suricata
 
-![Suricata Enable Output](screenshots/YAZd4WZE3KmfDcnpG94vF.png)
+![Suricata Enable Output](/screenshots/YAZd4WZE3KmfDcnpG94vF.png)
 
 ---
 
@@ -132,5 +138,5 @@ The alert is forwarded to Wazuh and displayed in the dashboard.
 - Wazuh ingests the alert with default severity  
 - Dashboard shows a spike during the scan  
 - MITRE ATT&CK mapping appears automatically when applicable  
-- Full event JSON is available for triage  
-  
+- Full event JSON is available for triage
+
