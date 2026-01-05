@@ -88,56 +88,54 @@ Result: 101 failed login attempts
 
 ---
 
-3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)
-Attack Execution  
+### 3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)
+
+**Attack Execution**  
 From the Parrot OS attacker system (“Takhisis”), a SYN scan with OS and service detection was launched against the Linux endpoint (“Raistlin”):
 
-Code
-nmap -sS -A -p 1-1000 192.168.0.9
-  
-Parrot OS terminal showing SYN scan and service enumeration
+    nmap -sS -A -p 1-1000 192.168.0.9
 
-Detection Setup
-The Linux endpoint (“Raistlin”) runs Suricata alongside the Wazuh agent.
+![Nmap Scan Output](/screenshots/NMapScan.png)  
+*Parrot OS terminal showing SYN scan and service enumeration*
+
+---
+
+### Detection Setup
+
+The Linux endpoint (“Raistlin”) runs Suricata alongside the Wazuh agent.  
 EVE JSON logging is enabled to capture alerts and protocol metadata:
 
-Code
-- eve-log:
-    enabled: yes
-    filetype: regular
-    filename: /var/log/suricata/eve.json
-    types:
-      - alert:
-          tagged-packets: yes
-      - http
-      - dns
-      - tls
-      - files
-      - anomaly
+    - eve-log:
+        enabled: yes
+        filetype: regular
+        filename: /var/log/suricata/eve.json
+        types:
+          - alert:
+              tagged-packets: yes
+          - http
+          - dns
+          - tls
+          - files
+          - anomaly
+
+![Suricata EVE Config](/screenshots/CorrectedEve-Log.png)
 
 Suricata service is enabled and started:
 
-Code
-sudo systemctl enable --now suricata
+    sudo systemctl enable --now suricata
 
-Detection Results
-Suricata detects the Nmap scan using its built‑in Emerging Threats ruleset.
+![Suricata Enable Output](/screenshots/Suricata.png)
+
+---
+
+### Detection Results
+
+Suricata detects the Nmap scan using its built‑in Emerging Threats ruleset.  
 The alert is forwarded to Wazuh and displayed in the dashboard.
 
-Outcome:
-
-Suricata generates an alert for Nmap Scripting Engine activity
-
-Wazuh ingests the alert with default severity
-
-Dashboard shows a spike during the scan
-
-MITRE ATT&CK mapping appears automatically when applicable
-
-Full event JSON is available for triage
-
-  
-Dashboard showing Suricata alert spike around 14:15 during the Nmap scan
-
-  
-Suricata alerts from agent “Raistlin” showing rule ID 86601 (ET SCAN Possible Nmap User-Agent Observed)
+**Outcome:**
+- Suricata generates an alert for Nmap Scripting Engine activity  
+- Wazuh ingests the alert with default severity  
+- Dashboard shows a spike during the scan  
+- MITRE ATT&CK mapping appears automatically when applicable  
+- Full event JSON is available for triage
