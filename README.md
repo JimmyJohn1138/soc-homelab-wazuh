@@ -130,8 +130,18 @@ Suricata service is enabled and started:
 
 ### Detection Results
 
-Suricata detects the Nmap scan using its built‑in Emerging Threats ruleset.  
-The alert is forwarded to Wazuh and displayed in the dashboard.
+Detection Results: Wazuh + Suricata
+This section showcases real alert data captured in the homelab using Wazuh and Suricata. Each screenshot is paired with the exact query used to retrieve it, enabling reproducibility and recruiter validation.
+
+ET SCAN – Nmap User-Agent Detection
+Suricata detects Nmap reconnaissance activity using the Emerging Threats ruleset. The alert is forwarded to Wazuh, indexed, and displayed in the dashboard for triage.
+![Nmap activity Spike](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/NMap%20Spike%20.png)
+
+### Detection Summary
+![Suricata Alerts](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/SuricataAlerts.png)
+
+## Event Context
+This alert was generated during a simulated Nmap scan from the attacker system (“Takhisis”) targeting the Linux endpoint (“Raistlin”). Suricata identified the scan based on the User-Agent string associated with Nmap’s scripting engine. Wazuh ingested the alert and displayed it in the dashboard, where it appeared as a spike in alert volume during the scan window.
 
 **Outcome:**
 - Suricata generates an alert for Nmap Scripting Engine activity  
