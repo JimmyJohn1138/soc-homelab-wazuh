@@ -18,7 +18,7 @@ This homelab replicates real SOC workflows:
 - Mapping to MITRE ATT&CK
 - Simulating incident response actions
 
-It highlights my ability to troubleshoot common production issues (agent connectivity, indexer performance, certificate errors) — skills directly transferable to tools like Wazuh, Splunk, Elastic, or Microsoft Sentinel.
+It highlights my ability to troubleshoot common production issues (agent connectivity, indexer performance, certificate errors, and configuration failures) — skills directly transferable to tools like Wazuh, Splunk, Elastic, or Microsoft Sentinel.
 
 Everything runs on **bare-metal personal hardware** (no VMs for the endpoints) to ensure authentic log behavior and network interactions.
 
