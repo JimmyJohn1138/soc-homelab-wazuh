@@ -89,7 +89,7 @@ From the Parrot OS attacker system (“Takhisis”), a SYN scan with OS and serv
 
     nmap -sS -A -p 1-1000 192.168.0.9
 
-![Nmap Scan Output](screenshots/3sdnWhYZ5adgstktABLkj.png)
+![Nmap Scan Output](screenshots/aE1n9K9BBPUWqNjcVLGZ4.png)  
 *Parrot OS terminal showing SYN scan and service enumeration*
 
 ---
@@ -112,13 +112,13 @@ EVE JSON logging is enabled to capture alerts and protocol metadata:
           - files
           - anomaly
 
-![Suricata EVE Config](screenshots/xGEQhsGUxL9BF6B3Y3ucq.png)
+![Suricata EVE Config](screenshots/9JfS232srXa2wEtCAivhU.png)
 
 Suricata service is enabled and started:
 
     sudo systemctl enable --now suricata
 
-![Suricata Enable Output](screenshots/gZeFjKwntDpsisW83xCuZ.png)
+![Suricata Enable Output](screenshots/YAZd4WZE3KmfDcnpG94vF.png)
 
 ---
 
@@ -133,3 +133,4 @@ The alert is forwarded to Wazuh and displayed in the dashboard.
 - Dashboard shows a spike during the scan  
 - MITRE ATT&CK mapping appears automatically when applicable  
 - Full event JSON is available for triage  
+  
