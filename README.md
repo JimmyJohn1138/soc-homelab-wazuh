@@ -82,60 +82,72 @@ Result: 101 failed login attempts
 ![RDP MITRE Framework View](screenshots/rdp-mitre-bruteforce.png)  
 ![RDP Event JSON](screenshots/rdp-event-json.png)
 
-3. Network Reconnaissance - Nmap Port Scan (Linux Endpoint)
-Attack Execution  
-Tool: Nmap from Parrot OS attacker
+### 3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)
 
-bash
-nmap -sS -A -p 1-1000 192.168.0.9
-  
-Parrot OS terminal showing SYN scan with OS and service detection
+**Attack Execution**  
+From the Parrot OS attacker system (“Takhisis”), a SYN scan with OS and service detection was launched against the Linux endpoint (“Raistlin”):
 
-Detection Setup
+    nmap -sS -A -p 1-1000 192.168.0.9
 
-Suricata installed on Raistlin with EVE JSON logging enabled
+![Nmap Scan Output](screenshots/nmap-scan-output.png)  
+*Parrot OS terminal showing SYN scan and service enumeration*
 
-Logging configured to capture alerts, HTTP, DNS, TLS, files, and anomalies
+---
 
-yaml
-- eve-log:
-    enabled: yes
-    filetype: regular
-    filename: /var/log/suricata/eve.json
-    types:
-      - alert:
-          tagged-packets: yes
-      - http
-      - dns
-      - tls
-      - files
-      - anomaly
-  
-Suricata configuration snippet enabling alert and protocol logging
+### Detection Setup
 
-Suricata service enabled and started:
+The Linux endpoint (“Raistlin”) runs Suricata alongside the Wazuh agent.  
+EVE JSON logging is enabled to capture alerts and protocol metadata:
 
-bash
-sudo systemctl enable --now suricata
+    - eve-log:
+        enabled: yes
+        filetype: regular
+        filename: /var/log/suricata/eve.json
+        types:
+          - alert:
+              tagged-packets: yes
+          - http
+          - dns
+          - tls
+          - files
+          - anomaly
 
-Custom Rule Deployment  
-Wazuh rule added to elevate Suricata SID 86600 to level 12 and map to MITRE ATT&CK T1046:
+![Suricata EVE Config](screenshots/eve-log-config.png)
 
-xml
-<group name="suricata,nmap">
-  <rule id="100201" level="12">
-    <if_sid>86600</if_sid>
-    <description>Nmap scripting engine detected - potential port scan.</description>
-    <mitre>
-      <id>T1046</id>
-    </mitre>
-  </rule>
-</group>
+Suricata service is enabled and started:
 
-Detection Results
+    sudo systemctl enable --now suricata
 
-High-severity alerts (level 12) triggered by Suricata
+![Suricata Enable Output](screenshots/suricata-enable.png)
 
-Alerts ingested by Wazuh and visualized in dashboard
+---
 
-MITRE heatmap highlights T1046 – Network Service Scanning
+### Custom Wazuh Rule for High‑Severity Nmap Detection
+
+Suricata’s Emerging Threats rule **SID 86600** detects Nmap Scripting Engine activity.  
+To elevate this to a high‑severity SOC‑visible alert, a custom Wazuh rule was added:
+
+    <group name="suricata,nmap">
+      <rule id="100201" level="12">
+        <if_sid>86600</if_sid>
+        <description>Nmap scripting engine detected - potential port scan.</description>
+        <mitre>
+          <id>T1046</id>
+        </mitre>
+      </rule>
+    </group>
+
+![Custom Nmap Rule](screenshots/custom-nmap-rule.png)
+
+---
+
+### Detection Results
+
+Once the scan begins, Suricata generates an alert which is forwarded to Wazuh.  
+The custom rule elevates the event to **Level 12**, making it highly visible in the dashboard.
+
+**Outcome:**
+- High‑severity alert triggered  
+- Dashboard spike during scan  
+- MITRE ATT&CK heatmap highlights **T1046 – Network Service Scanning**  
+- Full event JSON available for triage 
