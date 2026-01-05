@@ -90,16 +90,6 @@ Result: 101 failed login attempts
 
 ### 3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)
 
-**Attack Execution**  
-From the Parrot OS attacker system (“Takhisis”), a SYN scan with OS and service detection was launched against the Linux endpoint (“Raistlin”):
-
-    nmap -sS -A -p 1-1000 192.168.0.9
-
-![Nmap Scan Output](/screenshots/NMapScan.png)  
-*Parrot OS terminal showing SYN scan and service enumeration*
-
----
-
 ### Detection Setup
 
 The Linux endpoint (“Raistlin”) runs Suricata alongside the Wazuh agent.  
@@ -125,6 +115,16 @@ Suricata service is enabled and started:
     sudo systemctl enable --now suricata
 
 ![Suricata Enable Output](/screenshots/Suricata.png)
+
+---
+
+**Attack Execution**  
+From the Parrot OS attacker system (“Takhisis”), a SYN scan with OS and service detection was launched against the Linux endpoint (“Raistlin”):
+
+    nmap -sS -A -p 1-1000 192.168.0.9
+
+![Nmap Scan Output](/screenshots/NMapScan.png)  
+*Parrot OS terminal showing SYN scan and service enumeration*
 
 ---
 
