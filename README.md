@@ -118,7 +118,7 @@ EVE JSON logging is enabled to capture alerts and protocol metadata:
           - files
           - anomaly
 
-![Suricata EVE Config](/screenshots/CorrectedEve-Log.png)
+![Suricata EVE Config](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/CorrectedEve-Log%20.png)
 
 Suricata service is enabled and started:
 
