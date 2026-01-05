@@ -89,7 +89,7 @@ From the Parrot OS attacker system (“Takhisis”), a SYN scan with OS and serv
 
     nmap -sS -A -p 1-1000 192.168.0.9
 
-![Nmap Scan Output](screenshots/nmap-scan-output.png)  
+![Nmap Scan Output](screenshots/3sdnWhYZ5adgstktABLkj.png)
 *Parrot OS terminal showing SYN scan and service enumeration*
 
 ---
@@ -112,42 +112,24 @@ EVE JSON logging is enabled to capture alerts and protocol metadata:
           - files
           - anomaly
 
-![Suricata EVE Config](screenshots/eve-log-config.png)
+![Suricata EVE Config](screenshots/xGEQhsGUxL9BF6B3Y3ucq.png)
 
 Suricata service is enabled and started:
 
     sudo systemctl enable --now suricata
 
-![Suricata Enable Output](screenshots/suricata-enable.png)
-
----
-
-### Custom Wazuh Rule for High‑Severity Nmap Detection
-
-Suricata’s Emerging Threats rule **SID 86600** detects Nmap Scripting Engine activity.  
-To elevate this to a high‑severity SOC‑visible alert, a custom Wazuh rule was added:
-
-    <group name="suricata,nmap">
-      <rule id="100201" level="12">
-        <if_sid>86600</if_sid>
-        <description>Nmap scripting engine detected - potential port scan.</description>
-        <mitre>
-          <id>T1046</id>
-        </mitre>
-      </rule>
-    </group>
-
-![Custom Nmap Rule](screenshots/custom-nmap-rule.png)
+![Suricata Enable Output](screenshots/gZeFjKwntDpsisW83xCuZ.png)
 
 ---
 
 ### Detection Results
 
-Once the scan begins, Suricata generates an alert which is forwarded to Wazuh.  
-The custom rule elevates the event to **Level 12**, making it highly visible in the dashboard.
+Suricata detects the Nmap scan using its built‑in Emerging Threats ruleset.  
+The alert is forwarded to Wazuh and displayed in the dashboard.
 
 **Outcome:**
-- High‑severity alert triggered  
-- Dashboard spike during scan  
-- MITRE ATT&CK heatmap highlights **T1046 – Network Service Scanning**  
-- Full event JSON available for triage 
+- Suricata generates an alert for Nmap Scripting Engine activity  
+- Wazuh ingests the alert with default severity  
+- Dashboard shows a spike during the scan  
+- MITRE ATT&CK mapping appears automatically when applicable  
+- Full event JSON is available for triage  
