@@ -43,7 +43,7 @@ This homelab runs entirely on **bare‑metal hardware** with one attacker system
   Wazuh agent + auditd + Suricata installed. Used for SSH brute-force, privilege escalation, file monitoring, and **network reconnaissance** scenarios.
 
 - **Parrot OS Attacker + Agent ("Takhisis")**  
-  Dual role: generates safe attack traffic **and** reports its own logs to Wazuh. Tools: Hydra, Nmap, Atomic Red Team, EICAR.
+  Dual role: generates safe attack traffic **and** reports its own logs to Wazuh. Tools: Hydra, Nmap, Metasploit.
 
 **Note:** This repo focuses on attack/detection labs. For installation details, see [Wazuh documentation](https://documentation.wazuh.com/current/installation-guide/index.html).
 
@@ -84,7 +84,7 @@ Result: 101 failed login attempts
 
 ![Windows Agent Status](/screenshots/windows-agent-status.png)  
 ![RDP MITRE Framework View](/screenshots/rdp-mitre-bruteforce.png)  
-![RDP Event JSON](/screenshots/rdp-event-json.png)
+![RDP Event JSON](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/rdp-event-json)
 
 ---
 
