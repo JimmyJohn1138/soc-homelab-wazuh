@@ -112,16 +112,18 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 
 ### Windows Registry FIM – Malystryx
 
+![FIM Alert - Fistandantilus](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Alerts_Fistandantilus.png)
 **Observed Activity**: Firewall, Defender, TCP/IP, BAM registry changes  
 **Rules**: 752/751/750/594  
 **MITRE**: **T1112** (Modify Registry)
 
 ### Linux FIM – Raistlin & DargaardKeep
 
+![Linux FIM Demo](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Demo_Raistlin.png)
 **Monitored Path**: `/etc/cups/subscriptions.conf`  
 **Real-time**: Enabled (inotify)
 
-![Linux FIM Alert](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Alert_Raistlin.pnghttps://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Alert_Raistlin.png)  
+![Linux FIM Alert](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Alert_Raistlin.png)  
 *Checksum change detected on CUPS subscription file*
 
 **Rule**: 550 (Integrity checksum changed)
