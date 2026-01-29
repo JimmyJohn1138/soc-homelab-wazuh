@@ -120,10 +120,12 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 ### Linux FIM – Raistlin 
 
 ![Linux FIM Demo](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Demo_Raistlin.png)
+
 **Monitored Path**: `/etc/cups/subscriptions.conf`  
 **Real-time**: Enabled (inotify)
 
-![Linux FIM Alert](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Alert_Raistlin.png)  
+![Linux FIM Alert](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Alert_Raistlin.png) 
+
 *Checksum change detected on CUPS subscription file*
 
 **Rule**: 550 (Integrity checksum changed)
