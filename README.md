@@ -1,194 +1,140 @@
-# Wazuh SOC Homelab - Detection Lab
-**Hands-on SOC Detection & Response Lab with Wazuh**
+# Wazuh SOC Detection Homelab
 
-A fully self-built Security Operations Center (SOC) homelab using Wazuh — an open-source SIEM and XDR platform. This project demonstrates end-to-end threat detection and response workflows in a realistic multi-OS environment, focusing on entry-level SOC analyst skills: log ingestion, alert triage, detection engineering, troubleshooting, and basic incident response.
+**Hands-on SIEM & XDR Lab – Junior SOC Analyst Portfolio**  
+Self-built Wazuh-based Security Operations Center homelab demonstrating real-time threat detection, alert triage, and basic incident response across Linux and Windows endpoints — all on **bare-metal hardware** (no VMs for agents).
 
-![SSH Authentication Failure Spike](/screenshots/auth-failure-spike.png)
-*Wazuh Dashboard showing massive authentication failure spike during SSH brute-force simulation*
+![Hero – Brute Force Detection Spike](screenshots/auth-failure-spike.png)  
+*Wazuh dashboard showing massive authentication failure spike during SSH brute-force simulation*
 
-## Project Summary and Motivation
+## Table of Contents
+- [Project Summary & Motivation](#project-summary--motivation)
+- [Lab Architecture](#lab-architecture)
+- [Tools & Tech Stack](#tools--tech-stack)
+- [Simulated Attacks & Detections](#simulated-attacks--detections)
+  - [1. SSH Brute-Force (Linux Endpoint)](#1-ssh-brute-force-linux-endpoint)
+  - [2. RDP Brute-Force (Windows Endpoint)](#2-rdp-brute-force-windows-endpoint)
+  - [3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)](#3-network-reconnaissance--nmap-port-scan-linux-endpoint)
+- [File Integrity Monitoring (FIM) – Windows & Linux](#file-integrity-monitoring-fim--windows--linux)
+- [Why This Lab Matters](#why-this-lab-matters)
 
-As an aspiring cybersecurity professional targeting junior SOC analyst roles, I created this lab to bridge the gap between theoretical knowledge (e.g., Microsoft SC-200/SC-300 coursework, Security+ certification) and hands-on experience that employers actually look for.
+## Project Summary & Motivation
 
-This homelab replicates real SOC workflows:
-- Deploying and managing agents across Linux and Windows endpoints
-- Ingesting and enriching logs
-- Detecting attacks using stock and custom rules
-- Triaging alerts in the dashboard
-- Mapping to MITRE ATT&CK
-- Simulating incident response actions
+As an aspiring cybersecurity professional targeting junior SOC analyst roles, I created this lab to bridge the gap between theoretical knowledge (Security+ certification) and hands-on skills employers value most: log ingestion, detection engineering, alert triage, MITRE mapping, and troubleshooting real-world issues.
 
-It highlights my ability to troubleshoot common production issues (agent connectivity, indexer performance, certificate errors, and configuration failures) — skills directly transferable to tools like Wazuh, Splunk, Elastic, or Microsoft Sentinel.
+**Key Outcomes**:
+- Detected **750+ authentication failures** across SSH & RDP brute-force attacks
+- Mapped to MITRE ATT&CK **T1110** (Brute Force)
+- Validated File Integrity Monitoring (FIM) and network reconnaissance detection
 
-Everything runs on **bare-metal personal hardware** (no VMs for the endpoints) to ensure authentic log behavior and network interactions.
+Everything runs on **bare-metal personal hardware** to ensure authentic log behavior and network interactions.
 
-**Contact**: John Gill | Security+ (SY0-701) | [LinkedIn](https://www.linkedin.com/in/jessemcgeejr)
+**Contact** — John Gill | Security+ (SY0-701) | [LinkedIn](https://www.linkedin.com/in/jessemcgeejr/) | [Email](mailto:john.rm.gill.3@gmail.com)
 
 ## Lab Architecture
 
-![Lab Architecture Diagram](/screenshots/lab-architecture-diagram.jpg)
-*Homelab network topology: Wazuh manager centralizing logs from Linux/Windows endpoints and monitored attacker machine*
+![Lab Topology](screenshots/lab-architecture-diagram.jpg)  
+*Wazuh Manager centralizing logs from bare-metal Linux/Windows agents + monitored attacker*
 
-## ⚙️ Setup Overview
+- **Manager/Dashboard**: Ubuntu 22.04
+- **Linux Agent**: Ubuntu/Mint ("Raistlin") — SSH brute-force + FIM
+- **Windows Agent**: Windows 10 ("Fistandantilus") — RDP brute-force + registry FIM
+- **Attacker/Agent**: Parrot OS ("Takhisis") — Metasploit, Hydra, Nmap
 
-This homelab runs entirely on **bare‑metal hardware** with one attacker system (also monitored as a Wazuh agent) and two additional endpoints. All systems report logs to a central Wazuh Manager for detection and visualization.
+## Tools & Tech Stack
 
-- **Wazuh Manager/Dashboard (Ubuntu 22.04)**  
-  Installed using [Wazuh official guide](https://documentation.wazuh.com/current/installation-guide/index.html). Configured to collect logs from Windows, Linux, and Parrot agents.
+- **SIEM/XDR**: Wazuh 4.x (manager + agents)
+- **Network IDS**: Suricata (Emerging Threats ruleset) on Linux agent
+- **Attack Tools**: Metasploit, Hydra, Nmap
+- **Logging**: Sysmon (Windows), auditd (Linux), Suricata EVE JSON
+- **Hardware**: Bare-metal dual-boot setup (no virtualization for endpoints)
 
-- **Windows 10 Agent ("Fistandantilus")**  
-  Wazuh agent + Sysmon installed. Used for RDP brute-force and malware execution scenarios.
+## Simulated Attacks & Detections
 
-- **Linux Agent ("Raistlin")**  
-  Wazuh agent + auditd + Suricata installed. Used for SSH brute-force, privilege escalation, file monitoring, and **network reconnaissance** scenarios.
+### 1. SSH Brute-Force (Linux Endpoint)
 
-- **Parrot OS Attacker + Agent ("Takhisis")**  
-  Dual role: generates safe attack traffic **and** reports its own logs to Wazuh. Tools: Hydra, Nmap, Metasploit.
+**Attack** — Metasploit `auxiliary/scanner/ssh/ssh_login` — 500+ attempts  
+**Result** — 656 failed logins  
+**Detection** — Rule 5710/57105 → MITRE **T1110.001** (Brute Force – Password Guessing)
 
-**Note:** This repo focuses on attack/detection labs. For installation details, see [Wazuh documentation](https://documentation.wazuh.com/current/installation-guide/index.html).
+![SSH Brute-Force Detection Spike](screenshots/auth-failure-spike.png)  
+*Dashboard showing 656 authentication failures in seconds*
 
-## Simulated Attacks & Detection Results
+![Metasploit Execution](screenshots/metasploit-terminal.png)  
+*Metasploit console running the attack*
 
----
+![SSH Event JSON](screenshots/event-json-details.png)  
+*Decoded auth.log event from attacker IP*
 
-### 1. SSH Brute-Force Attack (Linux Endpoint)
+### 2. RDP Brute-Force (Windows Endpoint)
 
-**Attack Execution**  
-Tool: Metasploit `auxiliary/scanner/ssh/ssh_login`  
-Result: 656 failed login attempts in seconds
+**Attack** — Hydra — 101 failed attempts targeting administrator  
+**Result** — Windows Event ID 4625 volume  
+**Detection** — Rule 60122 → escalated to level 10 → MITRE **T1110**
 
-![Metasploit Terminal](/screenshots/metasploit-terminal.png)
+![RDP Dashboard Spike](screenshots/rdp-dashboard-overview.png)  
+*101 authentication failures with clear spike*
 
-**Detection**  
-- Triggered Wazuh rule **57105** (multiple SSH authentication failures)  
-- Mapped to MITRE ATT&CK **T1110.001** (Brute Force – Password Guessing)
+![Hydra Execution](screenshots/rdp-hydra-terminal.png)  
+*Hydra confirming 101 attempts from 192.168.0.74*
 
-![SSH Event JSON Details](/screenshots/event-json-details.png)  
-![SSH Authentication Failure Logs](/screenshots/auth-failure-logs.png)
+![RDP MITRE Mapping](screenshots/rdp-mitre-bruteforce.png)  
+*Brute Force tactic and level 10 severity confirmed*
 
----
-
-### 2. RDP Brute-Force Attack (Windows Endpoint)
-
-**Attack Execution**  
-Tool: Hydra on Parrot OS  
-Result: 101 failed login attempts
-
-![RDP Dashboard Overview](/screenshots/rdp-dashboard-overview.png)  
-![Hydra Terminal](/screenshots/rdp-hydra-terminal.png)
-
-**Detection**  
-- Windows Event ID **4625** captured  
-- Triggered Wazuh rule **18120** → Level 10 alerts  
-- Mapped to MITRE ATT&CK **T1110.003** (Brute Force – Password Spraying)
-
-![Windows Agent Status](/screenshots/windows-agent-status.png)  
-![RDP MITRE Framework View](/screenshots/rdp-mitre-bruteforce.png)  
-![RDP Event JSON](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/rdp-event-json)
-
----
+![RDP Event JSON](screenshots/rdp-event-json)  
+*Decoded Event 4625 showing failed logon details*
 
 ### 3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)
 
-### Detection Setup
+**Attack** — Nmap SYN scan with OS/service detection  
+**Detection** — Suricata ET SCAN rule → Wazuh ingestion → alert spike  
+**MITRE** — **T1595/T1046** (Active Scanning / Network Service Discovery)
 
-The Linux endpoint (“Raistlin”) runs Suricata alongside the Wazuh agent.  
-EVE JSON logging is enabled to capture alerts and protocol metadata:
+![Nmap Terminal Output](screenshots/NMapScan.png)  
+*Scan results showing open ports and services*
 
-![Suricata EVE Config](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/CorrectedEve-Log%20.png)
+![Nmap Alert Spike](screenshots/NMap%20Spike%20.png)  
+*Wazuh dashboard spike during reconnaissance activity*
 
-Suricata service is enabled and started:
+![Suricata Alerts](screenshots/SuricataAlerts.png)  
+*Suricata Emerging Threats detection forwarded to Wazuh*
 
-    sudo systemctl enable --now suricata
+## File Integrity Monitoring (FIM) – Windows & Linux
 
-![Suricata Enable Output](/screenshots/Suricata.png)
+### Windows File FIM – Lifecycle Test (Fistandantilus)
 
----
+**Test Path**: `C:\Users\Public\FIM_Test\wazuh_test.txt`  
+**Real-time**: Enabled (syscheck + Windows file system watcher)
 
-**Attack Execution**  
-From the Parrot OS attacker system (“Takhisis”), a SYN scan with OS and service detection was launched against the Linux endpoint (“Raistlin”):
+![FIM Demo – Fistandantilus](screenshots/fim_demo_fistandantilus.png)  
+*Lifecycle: create → modify → delete events captured*
 
-    nmap -sS -A -p 1-1000 192.168.0.9
+**MITRE**: **T1070.004** (File Deletion), **T1565.001** (Stored Data Manipulation)
 
-![Nmap Scan Output](/screenshots/NMapScan.png)  
-*Parrot OS terminal showing SYN scan and service enumeration*
+### Windows Registry FIM – Malystryx
 
----
+**Observed Activity**: Firewall, Defender, TCP/IP, BAM registry changes  
+**Rules**: 752/751/750/594  
+**MITRE**: **T1112** (Modify Registry)
 
-### Detection Results
+### Linux FIM – Raistlin & DargaardKeep
 
-Detection Results: Wazuh + Suricata
-This section showcases real alert data captured in the homelab using Wazuh and Suricata. Each screenshot is paired with the exact query used to retrieve it, enabling reproducibility and recruiter validation.
+**Monitored Path**: `/etc/cups/subscriptions.conf`  
+**Real-time**: Enabled (inotify)
 
-ET SCAN – Nmap User-Agent Detection
-Suricata detects Nmap reconnaissance activity using the Emerging Threats ruleset. The alert is forwarded to Wazuh, indexed, and displayed in the dashboard for triage.
-![Nmap activity Spike](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/NMap%20Spike%20.png)
+![Linux FIM Alert](screenshots/fim_alert_raistlin.png)  
+*Checksum change detected on CUPS subscription file*
 
-### Detection Summary
-![Suricata Alerts](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/SuricataAlerts.png)
+**Rule**: 550 (Integrity checksum changed)
 
-## Event Context
-This alert was generated during a simulated Nmap scan from the attacker system (“Takhisis”) targeting the Linux endpoint (“Raistlin”). Suricata identified the scan based on the User-Agent string associated with Nmap’s scripting engine. Wazuh ingested the alert and displayed it in the dashboard, where it appeared as a spike in alert volume during the scan window.
+## Why This Lab Matters
 
-**Outcome:**
-- Suricata generates an alert for Nmap Scripting Engine activity  
-- Wazuh ingests the alert with default severity  
-- Dashboard shows a spike during the scan  
-- MITRE ATT&CK mapping appears automatically when applicable  
-- Full event JSON is available for triage
+This homelab proves I can:
+- Deploy and manage a SIEM/XDR platform in a multi-OS environment
+- Simulate realistic attacks (credential access + reconnaissance)
+- Detect and triage alerts using stock + Suricata rules
+- Map detections to MITRE ATT&CK framework
+- Troubleshoot production-like issues (config errors, agent connectivity, volume overload)
 
-- ### Troubleshooting Summary
-- Initial agent logs showed invalid XML elements: `merge` and `registry`.
-- Removed unsupported XML blocks from:  
-  `/var/ossec/etc/shared/default/agent.conf`
-- Restarted Wazuh Manager and Windows agent to confirm clean startup.
-- Verified real-time monitoring startup messages:
-  - (6008) FIM scan started
-  - (6009) FIM scan ended
-  - (6012) Real-time monitoring started
-- Confirmed rule IDs:
-  - **554** → file added
-  - **550** → file modified
-  - **553** → file deleted
-- Validated alerts in both the FIM dashboard and raw JSON view.
+These are core junior SOC analyst skills transferable to Wazuh, Splunk, Elastic, Microsoft Sentinel, and similar platforms.
 
-## Windows Registry FIM – Malystryx
-
-### Scenario
-Validate registry monitoring on a Windows endpoint with high-churn registry activity.
-
-### Observed Registry Events
-- Firewall rule changes
-- Windows Defender policy updates
-- TCP/IP interface parameter updates
-- BAM (Background Activity Moderator) entries
-
-### Relevant Rule IDs
-- **752** → Registry Value Entry Added
-- **751** → Registry Value Entry Deleted
-- **750** → Registry Value Integrity Checksum Changed
-- **594** → Registry Key Integrity Checksum Changed
-
-### Troubleshooting Summary
-- Verified registry paths were correctly defined in the agent’s syscheck configuration.
-- Distinguished normal system churn from suspicious registry changes.
-- Ensured registry FIM volume did not overwhelm the indexer.
-- Confirmed registry-related rules were enabled and firing consistently.
-- Checked that no permission issues prevented registry hive access.
-
-## Linux FIM – Raistlin & DargaardKeep
-
-### Scenario
-Validate Linux file integrity monitoring on `/etc/cups/subscriptions.conf` and related files.
-
-### Observed Events
-- `syscheck.event`: modified
-- `rule.description`: Integrity checksum changed.
-- `rule.id`: **550**
-
-### Troubleshooting Summary
-- Ensured `/etc/cups/` was included in the Linux agent’s syscheck configuration.
-- Correlated FIM alerts with legitimate CUPS service activity.
-- Verified consistent rule ID **550** across Linux agents.
-- Confirmed no permission issues prevented the agent from reading monitored paths.
-- Checked that the agent supported real-time monitoring (inotify).
+**Last updated**: January 2026
