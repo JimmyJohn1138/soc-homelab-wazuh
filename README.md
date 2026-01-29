@@ -136,3 +136,59 @@ This alert was generated during a simulated Nmap scan from the attacker system (
 - Dashboard shows a spike during the scan  
 - MITRE ATT&CK mapping appears automatically when applicable  
 - Full event JSON is available for triage
+
+- ### Troubleshooting Summary
+- Initial agent logs showed invalid XML elements: `merge` and `registry`.
+- Removed unsupported XML blocks from:  
+  `/var/ossec/etc/shared/default/agent.conf`
+- Restarted Wazuh Manager and Windows agent to confirm clean startup.
+- Verified real-time monitoring startup messages:
+  - (6008) FIM scan started
+  - (6009) FIM scan ended
+  - (6012) Real-time monitoring started
+- Confirmed rule IDs:
+  - **554** → file added
+  - **550** → file modified
+  - **553** → file deleted
+- Validated alerts in both the FIM dashboard and raw JSON view.
+
+## Windows Registry FIM – Malystryx
+
+### Scenario
+Validate registry monitoring on a Windows endpoint with high-churn registry activity.
+
+### Observed Registry Events
+- Firewall rule changes
+- Windows Defender policy updates
+- TCP/IP interface parameter updates
+- BAM (Background Activity Moderator) entries
+
+### Relevant Rule IDs
+- **752** → Registry Value Entry Added
+- **751** → Registry Value Entry Deleted
+- **750** → Registry Value Integrity Checksum Changed
+- **594** → Registry Key Integrity Checksum Changed
+
+### Troubleshooting Summary
+- Verified registry paths were correctly defined in the agent’s syscheck configuration.
+- Distinguished normal system churn from suspicious registry changes.
+- Ensured registry FIM volume did not overwhelm the indexer.
+- Confirmed registry-related rules were enabled and firing consistently.
+- Checked that no permission issues prevented registry hive access.
+
+## Linux FIM – Raistlin & DargaardKeep
+
+### Scenario
+Validate Linux file integrity monitoring on `/etc/cups/subscriptions.conf` and related files.
+
+### Observed Events
+- `syscheck.event`: modified
+- `rule.description`: Integrity checksum changed.
+- `rule.id`: **550**
+
+### Troubleshooting Summary
+- Ensured `/etc/cups/` was included in the Linux agent’s syscheck configuration.
+- Correlated FIM alerts with legitimate CUPS service activity.
+- Verified consistent rule ID **550** across Linux agents.
+- Confirmed no permission issues prevented the agent from reading monitored paths.
+- Checked that the agent supported real-time monitoring (inotify).
