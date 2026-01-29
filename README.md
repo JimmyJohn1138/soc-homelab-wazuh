@@ -114,21 +114,21 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 
 ![FIM Alert - Fistandantilus](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Alerts_Fistandantilus.png)
 **Observed Activity**: Firewall, Defender, TCP/IP, BAM registry changes  
-**Rules**: 752/751/750/594  
+**Rules**: 553/550/554  
 **MITRE**: **T1112** (Modify Registry)
 
 ### Linux FIM – Raistlin 
 
 ![Linux FIM Demo](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Demo_Raistlin.png)
 
-**Monitored Path**: `/etc/cups/subscriptions.conf`  
+**Monitored Path**: `/home/raistlin/FIM_TEST/demo.txt`  
 **Real-time**: Enabled (inotify)
 
 ![Linux FIM Alert](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Alert_Raistlin.png) 
 
 *Checksum change detected on CUPS subscription file*
 
-**Rule**: 550 (Integrity checksum changed)
+**Rule**: 550, 553, 554 (Integrity checksum changed, file deleted, file added)
 
 ## Why This Lab Matters
 
