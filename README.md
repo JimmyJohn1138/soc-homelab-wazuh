@@ -110,14 +110,14 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 
 **MITRE**: **T1070.004** (File Deletion), **T1565.001** (Stored Data Manipulation)
 
-### Windows Registry FIM – Malystryx
+### Windows Registry FIM – Fistandantilus
 
 ![FIM Alert - Fistandantilus](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Alerts_Fistandantilus.png)
 **Observed Activity**: Firewall, Defender, TCP/IP, BAM registry changes  
 **Rules**: 752/751/750/594  
 **MITRE**: **T1112** (Modify Registry)
 
-### Linux FIM – Raistlin & DargaardKeep
+### Linux FIM – Raistlin 
 
 ![Linux FIM Demo](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Demo_Raistlin.png)
 **Monitored Path**: `/etc/cups/subscriptions.conf`  
