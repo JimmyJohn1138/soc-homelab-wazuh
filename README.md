@@ -114,7 +114,7 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 
 ![FIM Alert - Fistandantilus](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Alerts_Fistandantilus.png)
 **Observed Activity**: Firewall, Defender, TCP/IP, BAM registry changes  
-**Rules**: 553/550/554  
+**Rules**: 752/751/750/594  
 **MITRE**: **T1112** (Modify Registry)
 
 ### Linux FIM – Raistlin 
