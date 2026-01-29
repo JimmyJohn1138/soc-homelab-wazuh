@@ -105,7 +105,7 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 **Test Path**: `C:\Users\Public\FIM_Test\wazuh_test.txt`  
 **Real-time**: Enabled (syscheck + Windows file system watcher)
 
-![FIM Demo – Fistandantilus](screenshots/fim_demo_fistandantilus.png)  
+![FIM Demo – Fistandantilus](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Demo_Fistandantilus.PNG)  
 *Lifecycle: create → modify → delete events captured*
 
 **MITRE**: **T1070.004** (File Deletion), **T1565.001** (Stored Data Manipulation)
@@ -121,7 +121,7 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 **Monitored Path**: `/etc/cups/subscriptions.conf`  
 **Real-time**: Enabled (inotify)
 
-![Linux FIM Alert](screenshots/fim_alert_raistlin.png)  
+![Linux FIM Alert](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Alert_Raistlin.pnghttps://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/FIM_Alert_Raistlin.png)  
 *Checksum change detected on CUPS subscription file*
 
 **Rule**: 550 (Integrity checksum changed)
