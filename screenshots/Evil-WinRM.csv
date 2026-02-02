@@ -1,0 +1,9 @@
+timestamp,agent.name,rule.mitre.id,rule.mitre.tactic,rule.description,rule.level,rule.id
+"Feb 2, 2026 @ 23:48:18.747",Fistandantilus,"[""T1550.002"",""T1078.002""]","[""Defense Evasion"",""Lateral Movement"",""Persistence"",""Privilege Escalation"",""Initial Access""]","Successful Remote Logon Detected - User:\Fistandantilus - NTLM authentication, possible pass-the-hash attack.",6,92652
+"Feb 2, 2026 @ 23:48:18.742",Fistandantilus,"[""T1484""]","[""Defense Evasion"",""Privilege Escalation""]",Special privileges assigned to new logon.,3,67028
+"Feb 2, 2026 @ 23:47:49.408",Fistandantilus,"[""T1550.002"",""T1078.002""]","[""Defense Evasion"",""Lateral Movement"",""Persistence"",""Privilege Escalation"",""Initial Access""]","Successful Remote Logon Detected - User:\Fistandantilus - NTLM authentication, possible pass-the-hash attack.",6,92652
+"Feb 2, 2026 @ 23:47:49.403",Fistandantilus,"[""T1484""]","[""Defense Evasion"",""Privilege Escalation""]",Special privileges assigned to new logon.,3,67028
+"Feb 2, 2026 @ 23:46:18.731",Fistandantilus,"[""T1531""]","[""Impact""]",Logon Failure - Unknown user or bad password,5,60122
+"Feb 2, 2026 @ 23:46:08.668",Fistandantilus,"[""T1531""]","[""Impact""]",Logon Failure - Unknown user or bad password,5,60122
+"Feb 2, 2026 @ 23:45:58.652",Fistandantilus,"[""T1531""]","[""Impact""]",Logon Failure - Unknown user or bad password,5,60122
+"Feb 2, 2026 @ 23:45:58.637",Fistandantilus,"[""T1531""]","[""Impact""]",Logon Failure - Unknown user or bad password,5,60122
