@@ -14,7 +14,9 @@ Self-built Wazuh-based Security Operations Center homelab demonstrating real-tim
   - [1. SSH Brute-Force (Linux Endpoint)](#1-ssh-brute-force-linux-endpoint)
   - [2. RDP Brute-Force (Windows Endpoint)](#2-rdp-brute-force-windows-endpoint)
   - [3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)](#3-network-reconnaissance--nmap-port-scan-linux-endpoint)
-  - [4. Windows Remote Privilege Escalation (WinRM)](#4-windows-remote-privilege-escalation-winrm)
+- [Privilege Escalation Scenarios (Linux & Windows)](#privilege-escalation-scenarios-linux--windows)
+  - [Linux SSH Privilege Escalation (Raistlin)](#linux-ssh-privilege-escalation-raistlin)
+  - [Windows WinRM Privilege Escalation (Fistandantilus)](#windows-winrm-privilege-escalation-fistandantilus)
 - [File Integrity Monitoring (FIM) – Windows & Linux](#file-integrity-monitoring-fim--windows--linux)
 - [Why This Lab Matters](#why-this-lab-matters)
 
@@ -37,8 +39,8 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 *Wazuh Manager centralizing logs from bare-metal Linux/Windows agents + monitored attacker*
 
 - **Manager/Dashboard**: Ubuntu 22.04  
-- **Linux Agent**: Ubuntu/Mint ("Raistlin") — SSH brute-force + FIM  
-- **Windows Agent**: Windows 10 ("Fistandantilus") — RDP brute-force + registry FIM  
+- **Linux Agent**: Ubuntu/Mint ("Raistlin") — SSH brute-force, PrivEsc, Linux FIM  
+- **Windows Agent**: Windows 10 ("Fistandantilus") — RDP brute-force, WinRM PrivEsc, registry FIM  
 - **Attacker/Agent**: Parrot OS ("Takhisis") — Metasploit, Hydra, Nmap, Evil-WinRM  
 
 ## Tools & Tech Stack
@@ -97,36 +99,59 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 
 ---
 
-### 4. Windows Remote Privilege Escalation (WinRM)
+# Privilege Escalation Scenarios (Linux & Windows)
 
-Remote privilege escalation was performed on the Windows host **Fistandantilus** using **WinRM** from the attacker machine (**Takhisis**) via `evil-winrm`. This demonstrates Windows-native lateral movement and privilege escalation using PowerShell remoting.
+Privilege escalation is a critical post-compromise phase. These exercises demonstrate how Wazuh detects elevated activity on both Linux and Windows endpoints after initial access.
 
-#### MITRE Techniques Simulated
+---
 
-| MITRE ID      | Technique Description |
-|---------------|-----------------------|
-| T1021.006     | Remote Services: WinRM |
-| T1059.001     | PowerShell Execution |
-| T1548.002     | UAC Elevation |
-| T1053.005     | Scheduled Task PrivEsc |
-| T1543         | Service Execution |
-| T1110.001     | Failed Logon Attempts |
-| T1484         | Domain Policy Modification |
-| T1550.002     | Use Alternate Authentication Material |
-| T1078.002     | Valid Accounts |
-| T1531         | Account Access Removal |
+## Linux SSH Privilege Escalation (Raistlin)
 
-#### Remote WinRM Session
+After obtaining valid SSH access to **Raistlin**, a privilege escalation path was executed to simulate an attacker moving from a standard user to full root control.
 
-The following screenshot captures the full sequence of commands executed during the WinRM session, including identity enumeration, UAC elevation attempt, scheduled task creation, service manipulation, and registry access attempts. These actions directly correspond to the MITRE-mapped alerts shown in the Wazuh dashboard.
+**Scenario Highlights**:
+- Remote SSH login from attacker host **Takhisis**  
+- Escalation to root via `sudo`  
+- Execution of privileged administrative actions  
+- Wazuh correlation of authentication + PrivEsc events  
+
+**MITRE Techniques**:
+- **T1078.003** — Valid Accounts: SSH  
+- **T1548.003** — Sudo Elevation  
+- **T1059.004** — Unix Shell  
+- **T1068** — Privilege Escalation (Linux)  
+
+![SSH PrivEsc Session – Raistlin](screenshots/SSH-PrivEsc-Raistlin.png)
+
+![SSH PrivEsc Alerts – Raistlin](screenshots/SSH-PrivEsc_Alerts_Raistlin.png)
+
+[SSH PrivEsc Raw Alerts (CSV)](screenshots/SSH-PrivEsc-Raistlin.csv)
+
+---
+
+## Windows WinRM Privilege Escalation (Fistandantilus)
+
+Remote privilege escalation was performed on the Windows host **Fistandantilus** using **WinRM** from **Takhisis** via `evil-winrm`.
+
+**Scenario Highlights**:
+- Remote PowerShell session  
+- UAC elevation attempt  
+- Scheduled task creation  
+- Service manipulation  
+- Registry access attempts  
+- Wazuh detection of NTLM logon, PrivEsc, and failed logons  
+
+**MITRE Techniques**:
+- **T1021.006** — Remote Services: WinRM  
+- **T1548.002** — UAC Elevation  
+- **T1053.005** — Scheduled Task PrivEsc  
+- **T1543** — Service Execution  
+- **T1550.002** — Pass-the-Hash Indicators  
+- **T1531** — Account Access Removal  
 
 ![Evil-WinRM session on Fistandantilus](screenshots/Evil-WinRM.png)
 
-#### Detection Summary
-
 ![Wazuh alerts for WinRM PrivEsc](screenshots/Evil-WinRM_Fistandantilus_Alerts.png)
-
-#### Raw Alert Data
 
 [Evil-WinRM.csv](screenshots/Evil-WinRM.csv)
 
@@ -146,9 +171,6 @@ The following screenshot captures the full sequence of commands executed during 
 ## File Integrity Monitoring (FIM) – Windows & Linux
 
 ### Windows File FIM – Lifecycle Test (Fistandantilus)
-
-**Test Path**: `C:\Users\Public\FIM_Test\wazuh_test.txt`  
-**Real-time**: Enabled (syscheck + Windows file system watcher)
 
 ![FIM Demo – Fistandantilus](screenshots/FIM_Demo_Fistandantilus.PNG)
 
@@ -176,10 +198,10 @@ The following screenshot captures the full sequence of commands executed during 
 This homelab proves I can:
 
 - Deploy and manage a SIEM/XDR platform  
-- Simulate realistic attacks  
-- Detect and triage alerts  
-- Map detections to MITRE ATT&CK  
-- Troubleshoot production-like issues  
+- Simulate realistic attacks across Linux and Windows  
+- Detect and triage alerts with MITRE ATT&CK mapping  
+- Validate File Integrity Monitoring on both OS families  
+- Troubleshoot production-like issues in a bare-metal environment  
 
 **Last updated**: February 2026
 
