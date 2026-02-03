@@ -121,11 +121,11 @@ After obtaining valid SSH access to **Raistlin**, a privilege escalation path wa
 - **T1059.004** — Unix Shell  
 - **T1068** — Privilege Escalation (Linux)  
 
-![SSH PrivEsc Session – Raistlin](screenshots/SSH-PrivEsc-Raistlin.png)
+![SSH PrivEsc Session – Raistlin](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/SSH%20_Priv_Esc.png)
 
-![SSH PrivEsc Alerts – Raistlin](screenshots/SSH-PrivEsc_Alerts_Raistlin.png)
+![SSH PrivEsc Alerts – Raistlin](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/Priv_Esc_Raistlin_Dashboard_Alerts.png)
 
-[SSH PrivEsc Raw Alerts (CSV)](screenshots/SSH-PrivEsc-Raistlin.csv)
+[SSH PrivEsc Raw Alerts (CSV)](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/SSH%20_Priv_Esc.csv)
 
 ---
 
