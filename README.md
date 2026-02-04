@@ -68,10 +68,13 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 **Detection:** Rule 5710 / 57105 → MITRE **T1110.001**
 
 ![SSH Brute Force Spike](screenshots/auth-failure-spike.png)
+*Dashboard showing 656 authentication failures in seconds*
 
 ![Metasploit Terminal](screenshots/metasploit-terminal.png)
+*Metasploit console running the attack*
 
 ![SSH Event JSON](screenshots/event-json-details.png)
+*Decoded auth.log event from attacker IP*
 
 ---
 
@@ -81,12 +84,16 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 **Detection:** Rule 60122 → Level 10 → MITRE **T1110**
 
 ![RDP Dashboard](screenshots/rdp-dashboard-overview.png)
+*101 authentication failures with clear spike*
 
 ![Hydra Terminal](screenshots/rdp-hydra-terminal.png)
+*Hydra confirming 101 attempts from 192.168.0.74*
 
 ![RDP MITRE Mapping](screenshots/rdp-mitre-bruteforce.png)
+*Brute Force tactic and level 10 severity confirmed*
 
 ![RDP Event JSON](screenshots/rdp-event-json)
+*Decoded Event 4625 showing failed logon details*
 
 ---
 
@@ -97,11 +104,13 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 **MITRE:** **T1595**, **T1046**
 
 ![Nmap Scan Output](screenshots/NMapScan.png)
+*Scan results showing open ports and services*
 
 ![Nmap Spike](screenshots/NMap Spike .png)
+*Wazuh dashboard spike during reconnaissance activity*
 
 ![Suricata Alerts](screenshots/SuricataAlerts.png)
-
+*Suricata Emerging Threats detection forwarded to Wazuh*
 ---
 
 ## File Integrity Monitoring (FIM) – Windows & Linux
@@ -109,6 +118,7 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 ### Windows File FIM – Lifecycle Test (Fistandantilus)
 
 ![FIM Demo – Fistandantilus](screenshots/FIM_Demo_Fistandantilus.PNG)
+*Lifecycle: create → modify → delete events captured*
 
 **MITRE:** **T1070.004**, **T1565.001**
 
