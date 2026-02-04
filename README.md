@@ -28,6 +28,7 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
     • Validated File Integrity Monitoring (FIM) and network reconnaissance detection 
 Everything runs on **bare-metal personal hardware** to ensure authentic log behavior and network interactions.
 **Contact** — John Gill | Security+ (SY0-701) | LinkedIn | Email
+
 ## Lab Architecture
 ![Lab Topology](screenshots/lab-architecture-diagram.jpg) 
 *Wazuh Manager centralizing logs from bare-metal Linux/Windows agents + monitored attacker*
@@ -37,11 +38,11 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
     • **Attacker/Agent**: Parrot OS ("Takhisis") — Metasploit, Hydra, Nmap 
 
 ## Tools & Tech Stack
-    • **SIEM/XDR**: Wazuh 4.x (manager + agents) 
-    • **Network IDS**: Suricata (Emerging Threats ruleset) on Linux agent 
-    • **Attack Tools**: Metasploit, Hydra, Nmap 
-    • **Logging**: Sysmon (Windows), auditd (Linux), Suricata EVE JSON 
-    • **Hardware**: Bare-metal dual-boot setup (no virtualization for endpoints) 
+  • **SIEM/XDR**: Wazuh 4.x (manager + agents) 
+  • **Network IDS**: Suricata (Emerging Threats ruleset) on Linux agent 
+  • **Attack Tools**: Metasploit, Hydra, Nmap 
+  • **Logging**: Sysmon (Windows), auditd (Linux), Suricata EVE JSON 
+  • **Hardware**: Bare-metal dual-boot setup (no virtualization for endpoints) 
     
 ## Simulated Attacks & Detections
 
@@ -51,7 +52,7 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 **Result** — 656 failed logins
 **Detection** — Rule 5710/57105 → MITRE **T1110.001** (Brute Force – Password Guessing)
 
-![SSH Brute Force Detection Spike](screenshots/lab-architecture-diagram.jpg) 
+![SSH Brute Force Detection Spike](screenshots/auth-failure-spike.png) 
 *Dashboard showing 656 authentication failures in seconds*
 
 ![Metasploit Execution](screenshots/metasploit-terminal.png)
