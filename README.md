@@ -1,12 +1,12 @@
-# Wazuh SOC Detection Homelab
+# Wazuh SOC Detection Homelab  
+**Hands-on SIEM & XDR Lab – Junior SOC Analyst Portfolio**
 
-**Hands-on SIEM & XDR Lab – Junior SOC Analyst Portfolio**  
-Self-built Wazuh-based Security Operations Center homelab demonstrating real-time threat detection, alert triage, and basic incident response across Linux and Windows endpoints — all on **bare-metal hardware** (no VMs for agents).
+Self-built Wazuh-based Security Operations Center homelab demonstrating real-time threat detection, alert triage, and basic incident response across Linux and Windows endpoints — all on **bare-metal** hardware (no VMs for agents).
 
-![Hero – Brute Force Detection Spike](screenshots/auth-failure-spike.png)  
-*Wazuh dashboard showing massive authentication failure spike during SSH brute-force simulation*
+> **Note:** Some embedded screenshot/dashboard images failed to render in earlier versions. This document focuses on structure, content, reproducibility, and technical detail.
 
 ## Table of Contents
+
 - [Project Summary & Motivation](#project-summary--motivation)
 - [Lab Architecture](#lab-architecture)
 - [Tools & Tech Stack](#tools--tech-stack)
@@ -18,190 +18,252 @@ Self-built Wazuh-based Security Operations Center homelab demonstrating real-tim
   - [Linux SSH Privilege Escalation (Raistlin)](#linux-ssh-privilege-escalation-raistlin)
   - [Windows WinRM Privilege Escalation (Fistandantilus)](#windows-winrm-privilege-escalation-fistandantilus)
 - [File Integrity Monitoring (FIM) – Windows & Linux](#file-integrity-monitoring-fim--windows--linux)
+  - [Windows File FIM – Lifecycle Test](#windows-file-fim--lifecycle-test)
+  - [Windows Registry FIM](#windows-registry-fim)
+  - [Linux FIM](#linux-fim)
 - [Why This Lab Matters](#why-this-lab-matters)
+- [Contact](#contact)
 
 ## Project Summary & Motivation
 
-As an aspiring cybersecurity professional targeting junior SOC analyst roles, I created this lab to bridge the gap between theoretical knowledge (Security+ certification) and hands-on skills employers value most: log ingestion, detection engineering, alert triage, MITRE mapping, and troubleshooting real-world issues.
+As an aspiring cybersecurity professional targeting junior SOC analyst roles, I created this lab to bridge the gap between theoretical knowledge (Security+ certification) and hands-on skills employers value most: log ingestion, detection engineering, alert triage, MITRE ATT&CK mapping, and troubleshooting real-world issues.
 
-**Key Outcomes**:
-- Detected **750+ authentication failures** across SSH & RDP brute-force attacks  
-- Mapped to MITRE ATT&CK **T1110** (Brute Force)  
-- Validated File Integrity Monitoring (FIM) and network reconnaissance detection  
+**Key Outcomes:**
 
-Everything runs on **bare-metal personal hardware** to ensure authentic log behavior and network interactions.
+- Detected 750+ authentication failures across SSH & RDP brute-force attacks
+- Mapped to MITRE ATT&CK **T1110** (Brute Force)
+- Validated File Integrity Monitoring (FIM) and network reconnaissance detection
+- Added **Troubleshooting-Driven Reproducibility** sections to demonstrate real SOC problem-solving
+- Everything runs on bare-metal personal hardware → authentic log behavior & network interactions
 
-**Contact** — John Gill | Security+ (SY0-701) | [LinkedIn](https://www.linkedin.com/in/jessemcgeejr/) | [Email](mailto:john.rm.gill.3@gmail.com)
+**Contact** — John Gill | Security+ (SY0-701) | LinkedIn | Email
 
 ## Lab Architecture
 
-![Lab Topology](screenshots/lab-architecture-diagram.jpg)  
-*Wazuh Manager centralizing logs from bare-metal Linux/Windows agents + monitored attacker*
+- **Manager / Dashboard:** Ubuntu 22.04  
+- **Linux Agent:** Ubuntu/Mint ("Raistlin") — SSH brute-force, PrivEsc, Linux FIM  
+- **Windows Agent:** Windows 10 ("Fistandantilus") — RDP brute-force, WinRM PrivEsc, registry FIM  
+- **Attacker / Agent:** Parrot OS ("Takhisis") — Metasploit, Hydra, Nmap, Evil-WinRM  
 
-- **Manager/Dashboard**: Ubuntu 22.04  
-- **Linux Agent**: Ubuntu/Mint ("Raistlin") — SSH brute-force, PrivEsc, Linux FIM  
-- **Windows Agent**: Windows 10 ("Fistandantilus") — RDP brute-force, WinRM PrivEsc, registry FIM  
-- **Attacker/Agent**: Parrot OS ("Takhisis") — Metasploit, Hydra, Nmap, Evil-WinRM  
+Wazuh Manager centralizes logs from all bare-metal agents + the monitored attacker machine.
 
 ## Tools & Tech Stack
 
-- **SIEM/XDR**: Wazuh 4.x (manager + agents)  
-- **Network IDS**: Suricata (Emerging Threats ruleset) on Linux agent  
-- **Attack Tools**: Metasploit, Hydra, Nmap, Evil-WinRM  
-- **Logging**: Sysmon (Windows), auditd (Linux), Suricata EVE JSON  
-- **Hardware**: Bare-metal dual-boot setup (no virtualization for endpoints)
+- **SIEM/XDR:** Wazuh 4.x (manager + agents)  
+- **Network IDS:** Suricata (Emerging Threats ruleset) on Linux agent  
+- **Attack Tools:** Metasploit, Hydra, Nmap, Evil-WinRM  
+- **Logging:** Sysmon (Windows), auditd (Linux), Suricata EVE JSON  
+- **Hardware:** Bare-metal dual-boot setup (no virtualization for endpoints)
 
 ## Simulated Attacks & Detections
 
----
-
 ### 1. SSH Brute-Force (Linux Endpoint)
 
-**Attack** — Metasploit `auxiliary/scanner/ssh/ssh_login` — 500+ attempts  
-**Result** — 656 failed logins  
-**Detection** — Rule 5710/57105 → MITRE **T1110.001** (Brute Force – Password Guessing)
+- **Attack** — Metasploit `auxiliary/scanner/ssh/ssh_login` — 500+ attempts  
+- **Result** — 656 failed logins  
+- **Detection** — Rule 5710 / 57105 → MITRE **T1110.001** (Brute Force – Password Guessing)
 
-![SSH Brute-Force Detection Spike](screenshots/auth-failure-spike.png)
+**Troubleshooting-Driven Reproducibility**
 
-![Metasploit Execution](screenshots/metasploit-terminal.png)
+**Symptoms**  
+- Only rule 5710 fired  
+- No correlation alerts  
+- Sometimes no alerts at all  
 
-![SSH Event JSON](screenshots/event-json-details.png)
+**Root Causes**  
+- `auth.log` not monitored  
+- Agent connectivity issues  
+- Indexer queue lag  
 
----
+**Fix Implemented**
+
+```xml
+<localfile>
+  <location>/var/log/auth.log</location>
+  <log_format>syslog</log_format>
+</localfile>
+```
+
+**Validation**  
+Re-ran attack → 656 failures detected, Level-10 brute-force alert fired
 
 ### 2. RDP Brute-Force (Windows Endpoint)
 
-**Attack** — Hydra — 101 failed attempts targeting administrator  
-**Result** — Windows Event ID 4625 volume  
-**Detection** — Rule 60122 → escalated to level 10 → MITRE **T1110**
+- **Attack** — Hydra — 101 failed attempts targeting administrator  
+- **Result** — High volume of Windows Event ID 4625  
+- **Detection** — Rule 60122 → escalated to level 10 → MITRE **T1110**
 
-![RDP Dashboard Spike](screenshots/rdp-dashboard-overview.png)
+**Troubleshooting-Driven Reproducibility**
 
-![Hydra Execution](screenshots/rdp-hydra-terminal.png)
+**Symptoms**  
+- No 4625 logs ingested  
+- No brute-force alerts  
+- Hydra activity not detected  
 
-![RDP MITRE Mapping](screenshots/rdp-mitre-bruteforce.png)
+**Root Causes**  
+- Windows auditing disabled  
+- EventChannel not monitored  
+- Sysmon not forwarding logs  
 
-![RDP Event JSON](screenshots/rdp-event-json)
+**Fix Implemented**
 
----
+```xml
+<localfile>
+  <location>Security</location>
+  <log_format>eventchannel</log_format>
+</localfile>
+```
+Validation
+Re-ran attack → 656 failures detected, Level-10 brute-force alert fired
+2. RDP Brute-Force (Windows Endpoint)
 
-### 3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)
+Attack — Hydra — 101 failed attempts targeting administrator
+Result — High volume of Windows Event ID 4625
+Detection — Rule 60122 → escalated to level 10 → MITRE T1110
 
-**Attack** — Nmap SYN scan with OS/service detection  
-**Detection** — Suricata ET SCAN rule → Wazuh ingestion → alert spike  
-**MITRE** — **T1595/T1046** (Active Scanning / Network Service Discovery)
+Troubleshooting-Driven Reproducibility
+Symptoms
 
-![Nmap Terminal Output](screenshots/NMapScan.png)
+No 4625 logs ingested
+No brute-force alerts
+Hydra activity not detected
 
-![Nmap Alert Spike](screenshots/NMap%20Spike%20.png)
+Root Causes
 
-![Suricata Alerts](screenshots/SuricataAlerts.png)
+Windows auditing disabled
+EventChannel not monitored
+Sysmon not forwarding logs
 
----
+Fix Implemented
+```xml
+<localfile>
+  <location>Security</location>
+  <log_format>eventchannel</log_format>
+</localfile>
+```
+Validation
+101 failures detected, Rule 60122 fired
+3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)
 
-# Privilege Escalation Scenarios (Linux & Windows)
+Attack — Nmap SYN scan with OS/service detection
+Detection — Suricata ET SCAN rule → Wazuh ingestion → alert spike
+MITRE — T1595 / T1046
 
-Privilege escalation is a critical post-compromise phase. These exercises demonstrate how Wazuh detects elevated activity on both Linux and Windows endpoints after initial access.
+Troubleshooting-Driven Reproducibility
+Symptoms
 
----
+No Suricata alerts
+eve.json empty or not ingested
+Wazuh not receiving IDS logs
 
-## Linux SSH Privilege Escalation (Raistlin)
+Root Causes
 
-After obtaining valid SSH access to **Raistlin**, a privilege escalation path was executed to simulate an attacker moving from a standard user to full root control.
+Suricata disabled
+EVE JSON output disabled
+Wazuh not monitoring eve.json
 
-**Scenario Highlights**:
-- Remote SSH login from attacker host **Takhisis**  
-- Escalation to root via `sudo`  
-- Execution of privileged administrative actions  
-- Wazuh correlation of authentication + PrivEsc events  
+Fix Implemented
+```xml
+<localfile>
+  <location>/var/log/suricata/eve.json</location>
+  <log_format>json</log_format>
+</localfile>
+```
+Validation
+Re-ran Nmap → Suricata alerts successfully ingested into Wazuh
+Privilege Escalation Scenarios (Linux & Windows)
+Linux SSH Privilege Escalation (Raistlin)
+Scenario Highlights
 
-**MITRE Techniques**:
-- **T1078.003** — Valid Accounts: SSH  
-- **T1548.003** — Sudo Elevation  
-- **T1059.004** — Unix Shell  
-- **T1068** — Privilege Escalation (Linux)  
+Remote SSH login from attacker host Takhisis
+Escalation to root via sudo
+Execution of privileged administrative actions
+Wazuh correlation of authentication + PrivEsc events
 
-![SSH PrivEsc Session – Raistlin](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/SSH%20_Priv_Esc.png)
+MITRE Techniques
 
-![SSH PrivEsc Alerts – Raistlin](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/Priv_Esc_Raistlin_Dashboard_Alerts.png)
+T1078.003 — Valid Accounts: SSH
+T1548.003 — Sudo Elevation
+T1059.004 — Unix Shell
+T1068 — Privilege Escalation (Linux)
 
-[SSH PrivEsc Raw Alerts (CSV)](https://github.com/JimmyJohn1138/soc-homelab-wazuh/blob/main/screenshots/SSH%20_Priv_Esc.csv)
+Troubleshooting-Driven Reproducibility
+Fix Implemented
+```xml
+<syscheck>
+  <directories check_all="yes">/etc</directories>
+  <directories check_all="yes">/usr/bin</directories>
+</syscheck>
+```
+Validation
+SSH → sudo → root → PrivEsc alerts fired
+Windows WinRM Privilege Escalation (Fistandantilus)
+Scenario Highlights
 
----
+Remote PowerShell session via evil-winrm
+UAC elevation attempt
+Scheduled task creation, service manipulation, registry access
+Wazuh detection of NTLM logon, PrivEsc indicators, failed logons
 
-## Windows WinRM Privilege Escalation (Fistandantilus)
+MITRE Techniques
 
-Remote privilege escalation was performed on the Windows host **Fistandantilus** using **WinRM** from **Takhisis** via `evil-winrm`.
+T1021.006 — Remote Services: WinRM
+T1548.002 — UAC Elevation
+T1053.005 — Scheduled Task PrivEsc
+T1543 — Service Execution
+T1550.002 — Pass-the-Hash Indicators
+T1531 — Account Access Removal
 
-**Scenario Highlights**:
-- Remote PowerShell session  
-- UAC elevation attempt  
-- Scheduled task creation  
-- Service manipulation  
-- Registry access attempts  
-- Wazuh detection of NTLM logon, PrivEsc, and failed logons  
-
-**MITRE Techniques**:
-- **T1021.006** — Remote Services: WinRM  
-- **T1548.002** — UAC Elevation  
-- **T1053.005** — Scheduled Task PrivEsc  
-- **T1543** — Service Execution  
-- **T1550.002** — Pass-the-Hash Indicators  
-- **T1531** — Account Access Removal  
-
-![Evil-WinRM session on Fistandantilus](screenshots/Evil-WinRM.png)
-
-![Wazuh alerts for WinRM PrivEsc](screenshots/Evil-WinRM_Fistandantilus_Alerts.png)
-
-[Evil-WinRM.csv](screenshots/Evil-WinRM.csv)
-
-<details>
-<summary>WinRM Troubleshooting Notes</summary>
-
-- Local accounts require explicit hostname or `.\username` format  
-- WinRM must be enabled with `Enable-PSRemoting -Force`  
-- TCP 5985 must be allowed through Windows Firewall  
-- Blank passwords are rejected by WinRM  
-- LocalAccountTokenFilterPolicy must be set for remote admin rights  
-
-</details>
-
----
-
-## File Integrity Monitoring (FIM) – Windows & Linux
-
-### Windows File FIM – Lifecycle Test (Fistandantilus)
-
-![FIM Demo – Fistandantilus](screenshots/FIM_Demo_Fistandantilus.PNG)
-
-**MITRE**: **T1070.004**, **T1565.001**
-
-### Windows Registry FIM – Fistandantilus
-
-![FIM Alert - Fistandantilus](screenshots/FIM_Alerts_Fistandantilus.png)
-
-**Rules**: 752/751/750/594  
-**MITRE**: **T1112**
-
-### Linux FIM – Raistlin
-
-![Linux FIM Demo](screenshots/FIM_Demo_Raistlin.png)
-
-![Linux FIM Alert](screenshots/FIM_Alert_Raistlin.png)
-
-**Rules**: 550, 553, 554
-
----
-
-## Why This Lab Matters
-
+Troubleshooting-Driven Reproducibility
+Fix Implemented
+```xml<localfile>
+  <location>Microsoft-Windows-Sysmon/Operational</location>
+  <log_format>eventchannel</log_format>
+</localfile>
+```
+Validation
+WinRM → PowerShell → PrivEsc → Alerts fired
+File Integrity Monitoring (FIM) – Windows & Linux
+Windows File FIM – Lifecycle Test (Fistandantilus)
+MITRE: T1070.004, T1565.001
+Fix Implemented
+```xml
+<syscheck>
+  <directories check_all="yes">C:\Users\Public\FIM_Test</directories>
+</syscheck>
+```
+Validation
+Add → modify → delete → Rules 550/553/554 fired
+Windows Registry FIM – Fistandantilus
+Rules: 752 / 751 / 750 / 594
+MITRE: T1112
+Fix Implemented
+```xml
+<syscheck>
+  <windows_registry>HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run</windows_registry>
+</syscheck>
+```
+Validation
+Add → modify → delete → Rules 750/751/752 fired
+Linux FIM – Raistlin
+Rules: 550, 553, 554
+Fix Implemented
+```xml
+<syscheck>
+  <directories check_all="yes">/etc</directories>
+  <directories check_all="yes">/usr/bin</directories>
+</syscheck>
+```
+Validation
+Add → modify → delete → Rules 550/553/554 fired
+Why This Lab Matters
 This homelab proves I can:
 
-- Deploy and manage a SIEM/XDR platform  
-- Simulate realistic attacks across Linux and Windows  
-- Detect and triage alerts with MITRE ATT&CK mapping  
-- Validate File Integrity Monitoring on both OS families  
-- Troubleshoot production-like issues in a bare-metal environment  
+Deploy and manage a production-like SIEM/XDR platform
+Simulate realistic attacks across Linux and Windows endpoints
+Detect & triage alerts with accurate MITRE ATT&CK mapping
+Implement and validate File Integrity Monitoring on both OS families
+Troubleshoot real-world ingestion, configuration, and latency issues in a bare-metal environment
 
-**Last updated**: February 2026
-
+Last updated: February 2026
+text
