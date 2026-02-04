@@ -253,7 +253,7 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
   <log_format>json</log_format>
 </localfile>
 ```
-**Validation:*
+**Validation:**
 
 * Re-ran Nmap
 
