@@ -106,7 +106,7 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 ![Nmap Scan Output](screenshots/NMapScan.png)
 *Scan results showing open ports and services*
 
-![Nmap Spike](screenshots/NMap Spike .png)
+![Nmap Spike](screenshots/NMap%20Spike%20.png)
 *Wazuh dashboard spike during reconnaissance activity*
 
 ![Suricata Alerts](screenshots/SuricataAlerts.png)
