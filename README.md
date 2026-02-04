@@ -151,7 +151,7 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 
 ![SSH PrivEsc Alerts](screenshots/Priv_Esc_Raistlin_Dashboard_Alerts.png)
 
-[SSH PrivEsc Raw Alerts (CSV)](screenshots/SSH%20_Priv_Esc.csv)
+![SSH_Priv_Esc.csv](screenshots/SSH%20_Priv_Esc.csv)
 
 ---
 
