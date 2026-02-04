@@ -57,9 +57,11 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 
 *Dashboard showing 656 authentication failures in seconds*
 
+
 ![Metasploit Execution](screenshots/metasploit-terminal.png)
 
 *Metasploit console running the attack*
+
 
 ![SSH Event JSON](screenshots/event-json-details.png)
 
@@ -75,13 +77,16 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 
 *101 authentication failures with clear spike*
 
+
 ![Hydra Execution](screenshots/rdp-hydra-terminal.png)
 
 *Hydra confirming 101 attempts from 192.168.0.74*
 
+
 ![RDP MITRE Mapping](screenshots/rdp-mitre-bruteforce.png)
 
 *Brute Force tactic and level 10 severity confirmed*
+
 
 ![RDP Event JSON](screenshots/rdp-event-json)
 
@@ -97,9 +102,11 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 
 *Scan results showing open ports and services*
 
+
 ![Nmap Alert Spike](screenshots/NMap%20Spike%20.png)
 
 *Wazuh dashboard spike during reconnaissance activity*
+
 
 ![Suricata Alerts](screenshots/SuricataAlerts.png)
 
