@@ -102,7 +102,7 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 
 * Sometimes no alerts at all
 
-**Root Causes:*
+**Root Causes:**
 
 * auth.log not monitored
 
@@ -150,38 +150,38 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 <details>
 <summary><strong>Triage Workflow</strong></summary>
 
-Confirm spike in failed logons
+1) Confirm spike in failed logons
 
-Validate source IP
+2) Validate source IP
 
-Check for successful logons
+3) Check for successful logons
 
-Review logon type (10 = RDP)
+4) Review logon type (10 = RDP)
 
-Escalate if needed
+5) Escalate if needed
 
 </details>
 
 <details>
 <summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
 
-Symptoms
+**Symptoms:**
 
-No 4625 logs
+* No 4625 logs
 
-No brute-force alerts
+* No brute-force alerts
 
-Hydra activity not detected
+* Hydra activity not detected
 
-Root Causes
+**Root Causes:**
 
-Windows auditing disabled
+* Windows auditing disabled
 
-EventChannel not monitored
+* EventChannel not monitored
 
-Sysmon not forwarding logs
+* Sysmon not forwarding logs
 
-Fix Implemented
+**Fix Implemented:**
 
 ```xml
 <localfile>
@@ -189,11 +189,11 @@ Fix Implemented
   <log_format>eventchannel</log_format>
 </localfile>
 ```
-Validation
+**Validation:**
 
-101 failures detected
+* 101 failures detected
 
-Rule 60122 fired
+* Rule 60122 fired
 
 </details>
 
@@ -217,49 +217,47 @@ Rule 60122 fired
 <details>
 <summary><strong>Triage Workflow</strong></summary>
 
-Confirm Suricata alert
+1) Validate source IP
 
-Validate source IP
+2) Identify scan type (SYN, OS detection, service discovery)
 
-Identify scan type (SYN, OS detection, service discovery)
+3) Check for follow‑on activity
 
-Check for follow‑on activity
-
-Escalate if needed
+4) Escalate if needed
 
 </details>
 
 <details>
 <summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
 
-Symptoms
+**Symptoms:**
 
-No Suricata alerts
+* No Suricata alerts
 
-eve.json  empty
+* eve.json  empty
 
-Wazuh not ingesting IDS logs
+* Wazuh not ingesting IDS logs
 
-Root Causes
+**Root Causes:**
 
-Suricata disabled
+* Suricata disabled
 
-EVE JSON output disabled
+* EVE JSON output disabled
 
-Wazuh not monitoring eve.json
+* Wazuh not monitoring eve.json
 
-Fix Implemented
+**Fix Implemented:**
 ```xml
 <localfile>
   <location>/var/log/suricata/eve.json</location>
   <log_format>json</log_format>
 </localfile>
 ```
-Validation
+**Validation:*
 
-Re-ran Nmap
+* Re-ran Nmap
 
-Suricata → Wazuh alerts ingested
+* Suricata → Wazuh alerts ingested
 
 </details>
 
@@ -276,13 +274,13 @@ Suricata → Wazuh alerts ingested
 <details>
 <summary><strong>Triage Workflow</strong></summary>
 
-Confirm file path
+1) Confirm file path
 
-Validate user
+2) Validate user
 
-Check lifecycle (add/modify/delete)
+3) Check lifecycle (add/modify/delete)
 
-Correlate with other activity
+4) Correlate with other activity
 
 </details>
 
@@ -290,33 +288,33 @@ Correlate with other activity
   
 <summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
 
-Symptoms
+**Symptoms:**
 
-No file alerts
+* No file alerts
 
-Agent startup failures
+* Agent startup failures
 
-Syscheck not loading
+* Syscheck not loading
 
-Root Causes
+* Root Causes
 
-Invalid XML
+* Invalid XML
 
-Missing Syscheck paths
+* Missing Syscheck paths
 
-Indexer lag
+* Indexer lag
 
-Fix Implemented
+**Fix Implemented:**
 ```xml
 <syscheck>
   <directories check_all="yes">C:\Users\Public\FIM_Test</directories>
 </syscheck>
 ```
-Validation
+**Validation:**
 
-Add → modify → delete
+* Add → modify → delete
 
-Rules 550/553/554 fired
+* Rules 550/553/554 fired
 
 </details>
 
@@ -332,13 +330,13 @@ Rules 550/553/554 fired
 <details>
 <summary><strong>Triage Workflow</strong></summary>
 
-Confirm registry path
+1) Confirm registry path
 
-Validate user
+2) Validate user
 
-Identify type of change
+3) Identify type of change
 
-Correlate with other suspicious activity
+4) Correlate with other suspicious activity
 
 </details>
 
@@ -346,31 +344,31 @@ Correlate with other suspicious activity
   
 <summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
 
-Symptoms
+**Symptoms:**
 
-No registry alerts
+* No registry alerts
 
-XML errors
+* XML errors
 
-Syscheck module disabled
+* Syscheck module disabled
 
-Root Causes
+**Root Causes:**
 
-Malformed XML
+* Malformed XML
 
-Unsupported registry paths
+* Unsupported registry paths
 
-Fix Implemented
+**Fix Implemented:**
 ```xml
 <syscheck>
   <windows_registry>HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run</windows_registry>
 </syscheck>
 ```
-Validation
+**Validation:**
 
-Add → modify → delete
+* Add → modify → delete
 
-Rules 750/751/752 fired
+* Rules 750/751/752 fired
 
 </details>
 ---
@@ -386,36 +384,36 @@ Rules 750/751/752 fired
 <details>
 <summary><strong>Triage Workflow</strong></summary>
 
-Confirm file path
+1) Confirm file path
 
-Validate user
+2) Validate user
 
-Check lifecycle
+3) Check lifecycle
 
-Correlate with other activity
+4) Correlate with other activity
 
 </details>
 
 <details>
 <summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
 
-Symptoms
+**Symptoms:**
 
-No Linux FIM alerts
+* No Linux FIM alerts
 
-Missing Syscheck activity
+* Missing Syscheck activity
 
-XML errors
+* XML errors
 
-Root Causes
+* Root Causes
 
-Missing Syscheck paths
+* Missing Syscheck paths
 
-Inotify issues
+* Inotify issues
 
-Agent connectivity problems
+* Agent connectivity problems
 
-Fix Implemented
+**Fix Implemented:**
 
 ```xml
 <syscheck>
@@ -424,11 +422,11 @@ Fix Implemented
 </syscheck>
 ```
 
-Validation
+**Validation:**
 
-Add → modify → delete
+* Add → modify → delete
 
-Rules 550/553/554 fired
+* Rules 550/553/554 fired
 
 </details>
 
@@ -447,38 +445,38 @@ Rules 550/553/554 fired
 <details>
 <summary><strong>Triage Workflow</strong></summary>
 
-Confirm SSH login
+1) Confirm SSH login
 
-Validate sudo activity
+2) Validate sudo activity
 
-Identify user → root transition
+3) Identify user → root transition
 
-Check for privileged commands
+4) Check for privileged commands
 
-Escalate if unexpected
+5) Escalate if unexpected
 
 </details>
 
 <details>
 <summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
 
-Symptoms
+**Symptoms:**
 
-No sudo alerts
+* No sudo alerts
 
-No PrivEsc correlation
+* No PrivEsc correlation
 
-Missing auth.log  entries
+* Missing auth.log  entries
 
-Root Causes
+* Root Causes
 
-auditd not logging
+* auditd not logging
 
-auth.log  ingestion missing
+* auth.log  ingestion missing
 
-Syscheck paths incomplete
+* Syscheck paths incomplete
 
-Fix Implemented
+**Fix Implemented:**
 
 ```xml
 <syscheck>
@@ -487,11 +485,11 @@ Fix Implemented
 </syscheck>
 ```
 
-Validation
+**Validation:**
 
-SSH → sudo → root
+* SSH → sudo → root
 
-PrivEsc alerts fired
+* PrivEsc alerts fired
 
 </details>
 
@@ -508,38 +506,38 @@ PrivEsc alerts fired
 <details>
 <summary><strong>Triage Workflow</strong></summary>
 
-Confirm remote NTLM logon
+1) Confirm remote NTLM logon
 
-Validate PowerShell execution
+2) Validate PowerShell execution
 
-Identify PrivEsc attempts (UAC, tasks, services)
+3) Identify PrivEsc attempts (UAC, tasks, services)
 
-Check for persistence artifacts
+4) Check for persistence artifacts
 
-Escalate if malicious
+5) Escalate if malicious
 
 </details>
 
 <details>
 <summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
 
-Symptoms
+**Symptoms:**
 
-No Sysmon logs
+* No Sysmon logs
 
-No WinRM alerts
+* No WinRM alerts
 
-Missing registry FIM events
+* Missing registry FIM events
 
-Root Causes
+**Root Causes:**
 
-Sysmon misconfigured
+* Sysmon misconfigured
 
-EventChannel ACL issues
+* EventChannel ACL issues
 
-Registry XML malformed
+* Registry XML malformed
 
-Fix Implemented
+**Fix Implemented:**
 
 ```xml
 <localfile>
@@ -547,11 +545,11 @@ Fix Implemented
   <log_format>eventchannel</log_format>
 </localfile>
 ```
-Validation
+**Validation:**
 
-WinRM → PowerShell → PrivEsc
+* WinRM → PowerShell → PrivEsc
 
-Alerts fired
+* Alerts fired
 
 </details>
 
