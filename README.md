@@ -92,7 +92,7 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 ![RDP MITRE Mapping](screenshots/rdp-mitre-bruteforce.png)
 *Brute Force tactic and level 10 severity confirmed*
 
-![RDP Event JSON](screenshots/rdp-event-json)
+[RDP Event JSON](screenshots/rdp-event-json)
 *Decoded Event 4625 showing failed logon details*
 
 ---
@@ -151,7 +151,7 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 
 ![SSH PrivEsc Alerts](screenshots/Priv_Esc_Raistlin_Dashboard_Alerts.png)
 
-![SSH_Priv_Esc.csv](screenshots/SSH%20_Priv_Esc.csv)
+[SSH_Priv_Esc.csv](screenshots/SSH%20_Priv_Esc.csv)
 
 ---
 
