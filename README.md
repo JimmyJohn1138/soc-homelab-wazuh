@@ -30,7 +30,8 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 **Contact** — John Gill | Security+ (SY0-701) | LinkedIn | Email
 
 ## Lab Architecture
-![Lab Topology](screenshots/lab-architecture-diagram.jpg) 
+![Lab Topology](screenshots/lab-architecture-diagram.jpg)
+
 *Wazuh Manager centralizing logs from bare-metal Linux/Windows agents + monitored attacker*
     • **Manager/Dashboard**: Ubuntu 22.04 
     • **Linux Agent**: Ubuntu/Mint ("Raistlin") — SSH brute-force + FIM 
@@ -53,12 +54,15 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 **Detection** — Rule 5710/57105 → MITRE **T1110.001** (Brute Force – Password Guessing)
 
 ![SSH Brute Force Detection Spike](screenshots/auth-failure-spike.png) 
+
 *Dashboard showing 656 authentication failures in seconds*
 
 ![Metasploit Execution](screenshots/metasploit-terminal.png)
+
 *Metasploit console running the attack*
 
 ![SSH Event JSON](screenshots/event-json-details.png)
+
 *Decoded auth.log event from attacker IP*
 
 ### 2. RDP Brute-Force (Windows Endpoint)
@@ -68,15 +72,19 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 **Detection** — Rule 60122 → escalated to level 10 → MITRE **T1110**
 
 ![RDP Dashboard Spike](screenshots/rdp-dashboard-overview.png)
+
 *101 authentication failures with clear spike*
 
 ![Hydra Execution](screenshots/rdp-hydra-terminal.png)
+
 *Hydra confirming 101 attempts from 192.168.0.74*
 
 ![RDP MITRE Mapping](screenshots/rdp-mitre-bruteforce.png)
+
 *Brute Force tactic and level 10 severity confirmed*
 
 ![RDP Event JSON](screenshots/rdp-event-json)
+
 *Decoded Event 4625 showing failed logon details*
 
 ### 3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)
@@ -86,12 +94,15 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 **MITRE** — **T1595/T1046** (Active Scanning / Network Service Discovery)
 
 ![Nmap Terminal Output](screenshots/NMapScan.png)
+
 *Scan results showing open ports and services*
 
 ![Nmap Alert Spike](screenshots/NMap%20Spike%20.png)
+
 *Wazuh dashboard spike during reconnaissance activity*
 
 ![Suricata Alerts](screenshots/SuricataAlerts.png)
+
 *Suricata Emerging Threats detection forwarded to Wazuh*
 
 ## File Integrity Monitoring (FIM) – Windows & Linux
