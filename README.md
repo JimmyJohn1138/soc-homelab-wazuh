@@ -320,52 +320,6 @@ Rules 550/553/554 fired
 
 </details>
 
-<details>
-<summary><strong>Triage Workflow</strong></summary>
-
-Confirm file path
-
-Validate user
-
-Check lifecycle (add/modify/delete)
-
-Correlate with other activity
-
-</details>
-
-<details>
-<summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
-
-Symptoms
-
-No file alerts
-
-Agent startup failures
-
-Syscheck not loading
-
-Root Causes
-
-Invalid XML
-
-Missing Syscheck paths
-
-Indexer lag
-
-Fix Implemented
-```xml
-<syscheck>
-  <directories check_all="yes">C:\Users\Public\FIM_Test</directories>
-</syscheck>
-```
-Validation
-
-Add → modify → delete
-
-Rules 550/553/554 fired
-
-</details>
-
 ---
 
 ### Windows Registry FIM – Fistandantilus
