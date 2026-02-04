@@ -1,12 +1,25 @@
+# Wazuh SOC Detection Homelab
+
+**Hands-on SIEM & XDR Lab – Junior SOC Analyst Portfolio**  
+Self-built Wazuh-based Security Operations Center homelab demonstrating real-time threat detection, alert triage, and basic incident response across Linux and Windows endpoints — all on **bare-metal hardware** (no VMs for agents).
+
 ![Hero – Brute Force Detection Spike](screenshots/auth-failure-spike.png)  
 *Wazuh dashboard showing massive authentication failure spike during SSH brute-force simulation*
+
 ## Table of Contents
-    • Project Summary & Motivation 
-    • Lab Architecture 
-    • Tools & Tech Stack 
-    • Simulated Attacks & Detections   - 1. SSH Brute-Force (Linux Endpoint)   - 2. RDP Brute-Force (Windows Endpoint)   - 3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint) 
-    • File Integrity Monitoring (FIM) – Windows & Linux 
-    • Why This Lab Matters 
+- [Project Summary & Motivation](#project-summary--motivation)
+- [Lab Architecture](#lab-architecture)
+- [Tools & Tech Stack](#tools--tech-stack)
+- [Simulated Attacks & Detections](#simulated-attacks--detections)
+  - [1. SSH Brute-Force (Linux Endpoint)](#1-ssh-brute-force-linux-endpoint)
+  - [2. RDP Brute-Force (Windows Endpoint)](#2-rdp-brute-force-windows-endpoint)
+  - [3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)](#3-network-reconnaissance--nmap-port-scan-linux-endpoint)
+- [Privilege Escalation Scenarios (Linux & Windows)](#privilege-escalation-scenarios-linux--windows)
+  - [Linux SSH Privilege Escalation (Raistlin)](#linux-ssh-privilege-escalation-raistlin)
+  - [Windows WinRM Privilege Escalation (Fistandantilus)](#windows-winrm-privilege-escalation-fistandantilus)
+- [File Integrity Monitoring (FIM) – Windows & Linux](#file-integrity-monitoring-fim--windows--linux)
+- [Why This Lab Matters](#why-this-lab-matters)
+
 ## Project Summary & Motivation
 As an aspiring cybersecurity professional targeting junior SOC analyst roles, I created this lab to bridge the gap between theoretical knowledge (Security+ certification) and hands-on skills employers value most: log ingestion, detection engineering, alert triage, MITRE mapping, and troubleshooting real-world issues.
 **Key Outcomes**:
@@ -44,40 +57,59 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 **Result** — Windows Event ID 4625 volume
 **Detection** — Rule 60122 → escalated to level 10 → MITRE **T1110**
 ![RDP Dashboard Spike](screenshots/rdp-dashboard-overview.png)
+
 *101 authentication failures with clear spike*
+
 ![Hydra Execution](screenshots/rdp-hydra-terminal.png)
+
 *Hydra confirming 101 attempts from 192.168.0.74*
+
 ![RDP MITRE Mapping](screenshots/rdp-mitre-bruteforce.png)
+
 *Brute Force tactic and level 10 severity confirmed*
+
 ![RDP Event JSON](screenshots/rdp-event-json)
+
 *Decoded Event 4625 showing failed logon details*
+
 ### 3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)
 **Attack** — Nmap SYN scan with OS/service detection
 **Detection** — Suricata ET SCAN rule → Wazuh ingestion → alert spike
 **MITRE** — **T1595/T1046** (Active Scanning / Network Service Discovery)
+
 ![Nmap Terminal Output](screenshots/NMapScan.png)
+
 *Scan results showing open ports and services*
+
 ![Nmap Alert Spike](screenshots/NMap%20Spike%20.png)
+
 *Wazuh dashboard spike during reconnaissance activity*
+![Suricata Alerts](screenshots/SuricataAlerts.png)
 
 *Suricata Emerging Threats detection forwarded to Wazuh*
+
 ## File Integrity Monitoring (FIM) – Windows & Linux
 ### Windows File FIM – Lifecycle Test (Fistandantilus)
 **Test Path**: C:\Users\Public\FIM_Test\wazuh_test.txt
 **Real-time**: Enabled (syscheck + Windows file system watcher)
 ![FIM Demo – Fistandantilus](screenshots/FIM_Demo_Fistandantilus.PNG)
+
 *Lifecycle: create → modify → delete events captured*
+
 **MITRE**: **T1070.004** (File Deletion), **T1565.001** (Stored Data Manipulation)
 ### Windows Registry FIM – Fistandantilus
 ![FIM Alert - Fistandantilus](screenshots/FIM_Alerts_Fistandantilus.png)
+
 **Observed Activity**: Firewall, Defender, TCP/IP, BAM registry changes
 **Rules**: 752/751/750/594
 **MITRE**: **T1112** (Modify Registry)
 ### Linux FIM – Raistlin
 ![Linux FIM Demo](screenshots/FIM_Demo_Raistlin.png)
+
 **Monitored Path**: /home/raistlin/FIM_TEST/demo.txt
 **Real-time**: Enabled (inotify)
 ![Linux FIM Alert](screenshots/FIM_Alert_Raistlin.png)
+
 *Checksum change detected on CUPS subscription file*
 **Rule**: 550, 553, 554 (Integrity checksum changed, file deleted, file added)
 
@@ -159,3 +191,4 @@ This homelab proves I can:
     • Troubleshoot production-like issues (config errors, agent connectivity, volume overload) 
 These are core junior SOC analyst skills transferable to Wazuh, Splunk, Elastic, Microsoft Sentinel, and similar platforms.
 **Last updated**: February 2026 
+ 
