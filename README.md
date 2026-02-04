@@ -176,6 +176,3 @@ This homelab demonstrates the ability to:
 - Troubleshoot ingestion, configuration, and latency issues  
 
 **Last updated:** February 2026
-
-
- 
