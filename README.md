@@ -273,16 +273,6 @@ Suricata → Wazuh alerts ingested
 *Lifecycle: create → modify → delete events captured*
 
 **MITRE:** **T1070.004**, **T1565.001**
-
----
-
-### Windows Registry FIM – Fistandantilus
-
-![Registry FIM Alerts](screenshots/FIM_Alerts_Fistandantilus.png)
-
-**Rules:** 752 / 751 / 750 / 594  
-**MITRE:** **T1112**
-
 <details>
 <summary><strong>Triage Workflow</strong></summary>
 
@@ -297,6 +287,7 @@ Correlate with other activity
 </details>
 
 <details>
+  
 <summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
 
 Symptoms
@@ -361,6 +352,59 @@ Rules 550/553/554 fired
 
 </details>
 
+---
+
+### Windows Registry FIM – Fistandantilus
+
+![Registry FIM Alerts](screenshots/FIM_Alerts_Fistandantilus.png)
+
+**Rules:** 752 / 751 / 750 / 594  
+**MITRE:** **T1112**
+
+<details>
+<summary><strong>Triage Workflow</strong></summary>
+
+Confirm registry path
+
+Validate user
+
+Identify type of change
+
+Correlate with other suspicious activity
+
+</details>
+
+<details>
+  
+<summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
+
+Symptoms
+
+No registry alerts
+
+XML errors
+
+Syscheck module disabled
+
+Root Causes
+
+Malformed XML
+
+Unsupported registry paths
+
+Fix Implemented
+```xml
+<syscheck>
+  <windows_registry>HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run</windows_registry>
+</syscheck>
+```
+Validation
+
+Add → modify → delete
+
+Rules 750/751/752 fired
+
+</details>
 ---
 
 ### Linux FIM – Raistlin
