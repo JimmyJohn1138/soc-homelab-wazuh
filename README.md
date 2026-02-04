@@ -361,49 +361,6 @@ Rules 550/553/554 fired
 
 </details>
 
-<details>
-<summary><strong>Triage Workflow</strong></summary>
-
-Confirm registry path
-
-Validate user
-
-Identify type of change
-
-Correlate with other suspicious activity
-
-</details>
-
-<details>
-<summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
-
-Symptoms
-
-No registry alerts
-
-XML errors
-
-Syscheck module disabled
-
-Root Causes
-
-Malformed XML
-
-Unsupported registry paths
-
-Fix Implemented
-```xml
-<syscheck>
-  <windows_registry>HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run</windows_registry>
-</syscheck>
-```
-Validation
-
-Add → modify → delete
-
-Rules 750/751/752 fired
-
-</details>
 ---
 
 ### Linux FIM – Raistlin
