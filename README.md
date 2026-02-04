@@ -79,38 +79,38 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 <details>
 <summary><strong>Triage Workflow</strong></summary>
 
-Confirm spike in authentication failures
+1) Confirm spike in authentication failures
 
-Validate source IP
+2) Validate source IP
 
-Check for successful logins
+3) Check for successful logins
 
-Correlate with other activity
+4) Correlate with other activity
 
-Escalate if necessary
+5) Escalate if necessary
 
 </details>
 
 <details>
 <summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
 
-Symptoms
+**Symptoms:**
 
-Only rule 5710 fired
+* Only rule 5710 fired
 
-No correlation alerts
+* No correlation alerts
 
-Sometimes no alerts at all
+* Sometimes no alerts at all
 
-Root Causes
+**Root Causes:*
 
-auth.log not monitored
+* auth.log not monitored
 
-Agent connectivity issues
+* Agent connectivity issues
 
-Indexer queue lag
+* Indexer queue lag
 
-Fix Implemented
+**Fix Implemented:**
 
 ```xml
 <localfile>
@@ -118,13 +118,13 @@ Fix Implemented
   <log_format>syslog</log_format>
 </localfile>
 ```
-Validation
+**Validation:**
 
-Re-ran attack
+* Re-ran attack
 
-656 failures detected
+* 656 failures detected
 
-Level‑10 brute-force alert fired
+* Level‑10 brute-force alert fired
 
 </details>
 
