@@ -76,6 +76,58 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 ![SSH Event JSON](screenshots/event-json-details.png)
 *Decoded auth.log event from attacker IP*
 
+<details>
+<summary><strong>Triage Workflow</strong></summary>
+
+Confirm spike in authentication failures
+
+Validate source IP
+
+Check for successful logins
+
+Correlate with other activity
+
+Escalate if necessary
+
+</details>
+
+<details>
+<summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
+
+Symptoms
+
+Only rule 5710 fired
+
+No correlation alerts
+
+Sometimes no alerts at all
+
+Root Causes
+
+auth.log not monitored
+
+Agent connectivity issues
+
+Indexer queue lag
+
+Fix Implemented
+
+'''xml
+<localfile>
+  <location>/var/log/auth.log</location>
+  <log_format>syslog</log_format>
+</localfile>
+'''
+Validation
+
+Re-ran attack
+
+656 failures detected
+
+Level‑10 brute-force alert fired
+
+</details>
+
 ---
 
 ### 2. RDP Brute-Force (Windows Endpoint)
@@ -95,6 +147,56 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 [RDP Event JSON](screenshots/rdp-event-json)
 *Decoded Event 4625 showing failed logon details*
 
+<details>
+<summary><strong>Triage Workflow</strong></summary>
+
+Confirm spike in failed logons
+
+Validate source IP
+
+Check for successful logons
+
+Review logon type (10 = RDP)
+
+Escalate if needed
+
+</details>
+
+<details>
+<summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
+
+Symptoms
+
+No 4625 logs
+
+No brute-force alerts
+
+Hydra activity not detected
+
+Root Causes
+
+Windows auditing disabled
+
+EventChannel not monitored
+
+Sysmon not forwarding logs
+
+Fix Implemented
+
+'''xml
+<localfile>
+  <location>Security</location>
+  <log_format>eventchannel</log_format>
+</localfile>
+'''
+Validation
+
+101 failures detected
+
+Rule 60122 fired
+
+</details>
+
 ---
 
 ### 3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)
@@ -111,6 +213,56 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 
 ![Suricata Alerts](screenshots/SuricataAlerts.png)
 *Suricata Emerging Threats detection forwarded to Wazuh*
+
+<details>
+<summary><strong>Triage Workflow</strong></summary>
+
+Confirm Suricata alert
+
+Validate source IP
+
+Identify scan type (SYN, OS detection, service discovery)
+
+Check for follow‑on activity
+
+Escalate if needed
+
+</details>
+
+<details>
+<summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
+
+Symptoms
+
+No Suricata alerts
+
+eve.json  empty
+
+Wazuh not ingesting IDS logs
+
+Root Causes
+
+Suricata disabled
+
+EVE JSON output disabled
+
+Wazuh not monitoring eve.json
+
+Fix Implemented
+'''xml
+<localfile>
+  <location>/var/log/suricata/eve.json</location>
+  <log_format>json</log_format>
+</localfile>
+'''
+Validation
+
+Re-ran Nmap
+
+Suricata → Wazuh alerts ingested
+
+</details>
+
 ---
 
 ## File Integrity Monitoring (FIM) – Windows & Linux
@@ -131,6 +283,127 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 **Rules:** 752 / 751 / 750 / 594  
 **MITRE:** **T1112**
 
+<details>
+<summary><strong>Triage Workflow</strong></summary>
+
+Confirm file path
+
+Validate user
+
+Check lifecycle (add/modify/delete)
+
+Correlate with other activity
+
+</details>
+
+<details>
+<summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
+
+Symptoms
+
+No file alerts
+
+Agent startup failures
+
+Syscheck not loading
+
+Root Causes
+
+Invalid XML
+
+Missing Syscheck paths
+
+Indexer lag
+
+Fix Implemented<details>
+<summary><strong>Triage Workflow</strong></summary>
+
+Confirm file path
+
+Validate user
+
+Check lifecycle (add/modify/delete)
+
+Correlate with other activity
+
+</details>
+
+<details>
+<summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
+
+Symptoms
+
+No file alerts
+
+Agent startup failures
+
+Syscheck not loading
+
+Root Causes
+
+Invalid XML
+
+Missing Syscheck paths
+
+Indexer lag
+
+Fix Implemented
+'''xml
+<syscheck>
+  <directories check_all="yes">C:\Users\Public\FIM_Test</directories>
+</syscheck>
+'''
+Validation
+
+Add → modify → delete
+
+Rules 550/553/554 fired
+
+</details>
+
+<details>
+<summary><strong>Triage Workflow</strong></summary>
+
+Confirm registry path
+
+Validate user
+
+Identify type of change
+
+Correlate with other suspicious activity
+
+</details>
+
+<details>
+<summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
+
+Symptoms
+
+No registry alerts
+
+XML errors
+
+Syscheck module disabled
+
+Root Causes
+
+Malformed XML
+
+Unsupported registry paths
+
+Fix Implemented
+'''xml
+<syscheck>
+  <windows_registry>HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run</windows_registry>
+</syscheck>
+'''
+Validation
+
+Add → modify → delete
+
+Rules 750/751/752 fired
+
+</details>
 ---
 
 ### Linux FIM – Raistlin
@@ -140,6 +413,55 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 ![Linux FIM Alert](screenshots/FIM_Alert_Raistlin.png)
 
 **Rules:** 550 / 553 / 554
+
+<details>
+<summary><strong>Triage Workflow</strong></summary>
+
+Confirm file path
+
+Validate user
+
+Check lifecycle
+
+Correlate with other activity
+
+</details>
+
+<details>
+<summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
+
+Symptoms
+
+No Linux FIM alerts
+
+Missing Syscheck activity
+
+XML errors
+
+Root Causes
+
+Missing Syscheck paths
+
+Inotify issues
+
+Agent connectivity problems
+
+Fix Implemented
+
+'''xml
+<syscheck>
+  <directories check_all="yes">/etc</directories>
+  <directories check_all="yes">/usr/bin</directories>
+</syscheck>
+'''
+
+Validation
+
+Add → modify → delete
+
+Rules 550/553/554 fired
+
+</details>
 
 ---
 
@@ -153,6 +475,57 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 
 [SSH_Priv_Esc.csv](screenshots/SSH%20_Priv_Esc.csv)
 
+<details>
+<summary><strong>Triage Workflow</strong></summary>
+
+Confirm SSH login
+
+Validate sudo activity
+
+Identify user → root transition
+
+Check for privileged commands
+
+Escalate if unexpected
+
+</details>
+
+<details>
+<summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
+
+Symptoms
+
+No sudo alerts
+
+No PrivEsc correlation
+
+Missing auth.log  entries
+
+Root Causes
+
+auditd not logging
+
+auth.log  ingestion missing
+
+Syscheck paths incomplete
+
+Fix Implemented
+
+'''xml
+<syscheck>
+  <directories check_all="yes">/etc</directories>
+  <directories check_all="yes">/usr/bin</directories>
+</syscheck>
+'''
+
+Validation
+
+SSH → sudo → root
+
+PrivEsc alerts fired
+
+</details>
+
 ---
 
 ### Windows WinRM Privilege Escalation (Fistandantilus)
@@ -162,6 +535,56 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 ![WinRM PrivEsc Alerts](screenshots/Evil-WinRM_Fistandantilus_Alerts.png)
 
 [Evil-WinRM.csv](screenshots/Evil-WinRM.csv)
+
+<details>
+<summary><strong>Triage Workflow</strong></summary>
+
+Confirm remote NTLM logon
+
+Validate PowerShell execution
+
+Identify PrivEsc attempts (UAC, tasks, services)
+
+Check for persistence artifacts
+
+Escalate if malicious
+
+</details>
+
+<details>
+<summary><strong>Troubleshooting‑Driven Reproducibility</strong></summary>
+
+Symptoms
+
+No Sysmon logs
+
+No WinRM alerts
+
+Missing registry FIM events
+
+Root Causes
+
+Sysmon misconfigured
+
+EventChannel ACL issues
+
+Registry XML malformed
+
+Fix Implemented
+
+'''xml
+<localfile>
+  <location>Microsoft-Windows-Sysmon/Operational</location>
+  <log_format>eventchannel</log_format>
+</localfile>
+'''
+Validation
+
+WinRM → PowerShell → PrivEsc
+
+Alerts fired
+
+</details>
 
 ---
 
