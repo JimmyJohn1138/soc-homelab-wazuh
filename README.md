@@ -35,61 +35,68 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
     • **Linux Agent**: Ubuntu/Mint ("Raistlin") — SSH brute-force + FIM 
     • **Windows Agent**: Windows 10 ("Fistandantilus") — RDP brute-force + registry FIM 
     • **Attacker/Agent**: Parrot OS ("Takhisis") — Metasploit, Hydra, Nmap 
+
 ## Tools & Tech Stack
     • **SIEM/XDR**: Wazuh 4.x (manager + agents) 
     • **Network IDS**: Suricata (Emerging Threats ruleset) on Linux agent 
     • **Attack Tools**: Metasploit, Hydra, Nmap 
     • **Logging**: Sysmon (Windows), auditd (Linux), Suricata EVE JSON 
     • **Hardware**: Bare-metal dual-boot setup (no virtualization for endpoints) 
+    
 ## Simulated Attacks & Detections
+
 ### 1. SSH Brute-Force (Linux Endpoint)
+
 **Attack** — Metasploit auxiliary/scanner/ssh/ssh_login — 500+ attempts
 **Result** — 656 failed logins
 **Detection** — Rule 5710/57105 → MITRE **T1110.001** (Brute Force – Password Guessing)
+
 ![SSH Brute Force Detection Spike](screenshots/lab-architecture-diagram.jpg) 
 *Dashboard showing 656 authentication failures in seconds*
+
 ![Metasploit Execution](screenshots/metasploit-terminal.png)
 *Metasploit console running the attack*
+
 ![SSH Event JSON](screenshots/event-json-details.png)
 *Decoded auth.log event from attacker IP*
+
 ### 2. RDP Brute-Force (Windows Endpoint)
+
 **Attack** — Hydra — 101 failed attempts targeting administrator
 **Result** — Windows Event ID 4625 volume
 **Detection** — Rule 60122 → escalated to level 10 → MITRE **T1110**
-![RDP Dashboard Spike](screenshots/rdp-dashboard-overview.png)
 
+![RDP Dashboard Spike](screenshots/rdp-dashboard-overview.png)
 *101 authentication failures with clear spike*
 
 ![Hydra Execution](screenshots/rdp-hydra-terminal.png)
-
 *Hydra confirming 101 attempts from 192.168.0.74*
 
 ![RDP MITRE Mapping](screenshots/rdp-mitre-bruteforce.png)
-
 *Brute Force tactic and level 10 severity confirmed*
 
 ![RDP Event JSON](screenshots/rdp-event-json)
-
 *Decoded Event 4625 showing failed logon details*
 
 ### 3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)
+
 **Attack** — Nmap SYN scan with OS/service detection
 **Detection** — Suricata ET SCAN rule → Wazuh ingestion → alert spike
 **MITRE** — **T1595/T1046** (Active Scanning / Network Service Discovery)
 
 ![Nmap Terminal Output](screenshots/NMapScan.png)
-
 *Scan results showing open ports and services*
 
 ![Nmap Alert Spike](screenshots/NMap%20Spike%20.png)
-
 *Wazuh dashboard spike during reconnaissance activity*
-![Suricata Alerts](screenshots/SuricataAlerts.png)
 
+![Suricata Alerts](screenshots/SuricataAlerts.png)
 *Suricata Emerging Threats detection forwarded to Wazuh*
 
 ## File Integrity Monitoring (FIM) – Windows & Linux
+
 ### Windows File FIM – Lifecycle Test (Fistandantilus)
+
 **Test Path**: C:\Users\Public\FIM_Test\wazuh_test.txt
 **Real-time**: Enabled (syscheck + Windows file system watcher)
 ![FIM Demo – Fistandantilus](screenshots/FIM_Demo_Fistandantilus.PNG)
@@ -97,17 +104,21 @@ Everything runs on **bare-metal personal hardware** to ensure authentic log beha
 *Lifecycle: create → modify → delete events captured*
 
 **MITRE**: **T1070.004** (File Deletion), **T1565.001** (Stored Data Manipulation)
+
 ### Windows Registry FIM – Fistandantilus
+
 ![FIM Alert - Fistandantilus](screenshots/FIM_Alerts_Fistandantilus.png)
 
 **Observed Activity**: Firewall, Defender, TCP/IP, BAM registry changes
 **Rules**: 752/751/750/594
 **MITRE**: **T1112** (Modify Registry)
 ### Linux FIM – Raistlin
+
 ![Linux FIM Demo](screenshots/FIM_Demo_Raistlin.png)
 
 **Monitored Path**: /home/raistlin/FIM_TEST/demo.txt
 **Real-time**: Enabled (inotify)
+
 ![Linux FIM Alert](screenshots/FIM_Alert_Raistlin.png)
 
 *Checksum change detected on CUPS subscription file*
@@ -191,4 +202,5 @@ This homelab proves I can:
     • Troubleshoot production-like issues (config errors, agent connectivity, volume overload) 
 These are core junior SOC analyst skills transferable to Wazuh, Splunk, Elastic, Microsoft Sentinel, and similar platforms.
 **Last updated**: February 2026 
+
  
