@@ -112,12 +112,12 @@ Indexer queue lag
 
 Fix Implemented
 
-'''xml
+```xml
 <localfile>
   <location>/var/log/auth.log</location>
   <log_format>syslog</log_format>
 </localfile>
-'''
+```
 Validation
 
 Re-ran attack
@@ -183,12 +183,12 @@ Sysmon not forwarding logs
 
 Fix Implemented
 
-'''xml
+```xml
 <localfile>
   <location>Security</location>
   <log_format>eventchannel</log_format>
 </localfile>
-'''
+```
 Validation
 
 101 failures detected
@@ -249,12 +249,12 @@ EVE JSON output disabled
 Wazuh not monitoring eve.json
 
 Fix Implemented
-'''xml
+```xml
 <localfile>
   <location>/var/log/suricata/eve.json</location>
   <log_format>json</log_format>
 </localfile>
-'''
+```
 Validation
 
 Re-ran Nmap
@@ -348,11 +348,11 @@ Missing Syscheck paths
 Indexer lag
 
 Fix Implemented
-'''xml
+```xml
 <syscheck>
   <directories check_all="yes">C:\Users\Public\FIM_Test</directories>
 </syscheck>
-'''
+```
 Validation
 
 Add → modify → delete
@@ -392,11 +392,11 @@ Malformed XML
 Unsupported registry paths
 
 Fix Implemented
-'''xml
+```xml
 <syscheck>
   <windows_registry>HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run</windows_registry>
 </syscheck>
-'''
+```
 Validation
 
 Add → modify → delete
@@ -448,12 +448,12 @@ Agent connectivity problems
 
 Fix Implemented
 
-'''xml
+```xml
 <syscheck>
   <directories check_all="yes">/etc</directories>
   <directories check_all="yes">/usr/bin</directories>
 </syscheck>
-'''
+```
 
 Validation
 
@@ -511,12 +511,12 @@ Syscheck paths incomplete
 
 Fix Implemented
 
-'''xml
+```xml
 <syscheck>
   <directories check_all="yes">/etc</directories>
   <directories check_all="yes">/usr/bin</directories>
 </syscheck>
-'''
+```
 
 Validation
 
@@ -572,12 +572,12 @@ Registry XML malformed
 
 Fix Implemented
 
-'''xml
+```xml
 <localfile>
   <location>Microsoft-Windows-Sysmon/Operational</location>
   <log_format>eventchannel</log_format>
 </localfile>
-'''
+```
 Validation
 
 WinRM → PowerShell → PrivEsc
