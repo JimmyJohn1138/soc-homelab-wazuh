@@ -147,11 +147,11 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 
 ### Linux SSH Privilege Escalation (Raistlin)
 
-![SSH PrivEsc Session](screenshots/SSH _Priv_Esc.png)
+![SSH PrivEsc Session](screenshots/SSH%20_Priv_Esc.png)
 
 ![SSH PrivEsc Alerts](screenshots/Priv_Esc_Raistlin_Dashboard_Alerts.png)
 
-[SSH PrivEsc Raw Alerts (CSV)](screenshots/SSH _Priv_Esc.csv)
+[SSH PrivEsc Raw Alerts (CSV)](screenshots/SSH%20_Priv_Esc.csv)
 
 ---
 
