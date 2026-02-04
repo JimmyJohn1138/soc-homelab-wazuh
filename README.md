@@ -306,7 +306,21 @@ Missing Syscheck paths
 
 Indexer lag
 
-Fix Implemented<details>
+Fix Implemented
+```xml
+<syscheck>
+  <directories check_all="yes">C:\Users\Public\FIM_Test</directories>
+</syscheck>
+```
+Validation
+
+Add → modify → delete
+
+Rules 550/553/554 fired
+
+</details>
+
+<details>
 <summary><strong>Triage Workflow</strong></summary>
 
 Confirm file path
