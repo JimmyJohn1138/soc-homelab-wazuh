@@ -128,6 +128,22 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 
 </details>
 
+<details>
+<summary><strong>Why This Detection Matters</strong></summary>
+
+Brute‑force activity is one of the most common forms of unauthorized access attempts against Linux systems.  
+Detecting repeated SSH authentication failures helps analysts identify:
+
+- Credential‑stuffing attempts  
+- Password‑guessing attacks  
+- Automated bot activity  
+- Early‑stage intrusion attempts  
+
+SSH is often the *first* externally exposed service on Linux hosts, making it a high‑value target.  
+Catching brute‑force attempts early prevents attackers from gaining a foothold and reduces the risk of lateral movement or privilege escalation.
+
+</details>
+
 ---
 
 ### 2. RDP Brute-Force (Windows Endpoint)
@@ -197,6 +213,22 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 
 </details>
 
+<details>
+<summary><strong>Why This Detection Matters</strong></summary>
+
+RDP is one of the most frequently abused remote access protocols in Windows environments.  
+Detecting repeated RDP authentication failures helps analysts identify:
+
+- External threat actors probing exposed RDP  
+- Internal misuse or compromised accounts  
+- Credential‑stuffing or password‑spraying attacks  
+- Early indicators of ransomware operators  
+
+RDP compromise is a common precursor to data theft, ransomware deployment, and domain‑wide lateral movement.  
+Early detection significantly reduces the blast radius of potential compromise.
+
+</details>
+
 ---
 
 ### 3. Network Reconnaissance – Nmap Port Scan (Linux Endpoint)
@@ -261,6 +293,22 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 
 </details>
 
+<details>
+<summary><strong>Why This Detection Matters</strong></summary>
+
+Reconnaissance is the first phase of nearly every intrusion.  
+Detecting Nmap scans helps analysts identify:
+
+- Attackers mapping open ports and services  
+- Attempts to fingerprint OS versions  
+- Pre‑exploitation reconnaissance  
+- Lateral movement preparation  
+
+If an attacker is scanning your environment, they are actively looking for weaknesses.  
+Catching recon early allows defenders to respond before exploitation occurs.
+
+</details>
+
 ---
 
 ## File Integrity Monitoring (FIM) – Windows & Linux
@@ -318,6 +366,21 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 
 </details>
 
+<details>
+<summary><strong>Why This Detection Matters</strong></summary>
+
+File Integrity Monitoring (FIM) is essential for detecting:
+
+- Malware dropping files  
+- Ransomware modifying or encrypting data  
+- Unauthorized file creation in sensitive directories  
+- Tampering with system binaries  
+
+Tracking file creation, modification, and deletion provides visibility into suspicious activity that may not trigger traditional alerts.  
+FIM acts as a safety net for detecting subtle or stealthy attacks.
+
+</details>
+
 ---
 
 ### Windows Registry FIM – Fistandantilus
@@ -371,6 +434,27 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 * Rules 750/751/752 fired
 
 </details>
+<details>
+<summary><strong>Why This Detection Matters</strong></summary>
+
+The Windows Registry is a common target for:
+
+- Persistence mechanisms  
+- Privilege escalation  
+- Malware configuration storage  
+- Execution hijacking  
+
+Monitoring registry changes helps analysts detect:
+
+- New autoruns  
+- Suspicious Run/RunOnce entries  
+- Tampering with security controls  
+- Indicators of malware installation  
+
+Registry FIM is a critical layer of defense for detecting stealthy or persistent threats.
+
+</details>
+
 ---
 
 ### Linux FIM – Raistlin
@@ -427,6 +511,21 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 * Add → modify → delete
 
 * Rules 550/553/554 fired
+
+</details>
+
+<details>
+<summary><strong>Why This Detection Matters</strong></summary>
+
+Linux file integrity monitoring helps detect:
+
+- Unauthorized configuration changes  
+- Privilege escalation artifacts  
+- Rootkit installation attempts  
+- Tampering with system binaries  
+
+Linux attackers often modify `/etc`, `/usr/bin`, or other sensitive directories to maintain persistence or escalate privileges.  
+FIM provides early warning of these changes and supports forensic analysis.
 
 </details>
 
@@ -493,6 +592,22 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 
 </details>
 
+<details>
+<summary><strong>Why This Detection Matters</strong></summary>
+
+Privilege escalation is a critical stage in the attack lifecycle.  
+Detecting sudo elevation helps analysts identify:
+
+- Compromised user accounts  
+- Unauthorized privilege use  
+- Lateral movement attempts  
+- Attackers preparing for persistence or data theft  
+
+If an attacker reaches root, they can disable logs, create backdoors, or exfiltrate sensitive data.  
+Catching PrivEsc attempts early is essential for containment.
+
+</details>
+
 ---
 
 ### Windows WinRM Privilege Escalation (Fistandantilus)
@@ -550,6 +665,26 @@ As an aspiring cybersecurity professional targeting junior SOC analyst roles, I 
 * WinRM → PowerShell → PrivEsc
 
 * Alerts fired
+
+</details>
+
+<details>
+<summary><strong>Why This Detection Matters</strong></summary>
+
+WinRM is a powerful remote management protocol often abused by attackers for:
+
+- Remote code execution  
+- Lateral movement  
+- Privilege escalation  
+- Stealthy post‑exploitation activity  
+
+Detecting WinRM logons, PowerShell execution, and PrivEsc attempts helps analysts identify:
+
+- Unauthorized remote access  
+- Credential misuse  
+- Attempts to escalate privileges or establish persistence  
+
+WinRM abuse is common in ransomware operations and targeted intrusions, making detection critical.
 
 </details>
 
